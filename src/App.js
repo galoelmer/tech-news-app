@@ -1,10 +1,13 @@
 import React from 'react';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
 
 function App() {
   return (
-    <div>
-      <h1 style={{ textAlign: 'center' }}>Tech News App</h1>
-    </div>
+    <React.Fragment>
+      <Navbar />
+      <Home />;
+    </React.Fragment>
   );
 }
 

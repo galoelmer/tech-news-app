@@ -26,28 +26,24 @@ export default function FullWidthGrid() {
     <div className={classes.root}>
       <Grid container spacing={3}>
         {data.length ? (
-          (
           data.map((item) => {
-              if (!item.title || !item.description || !item.urlToImage) {
-                return null;
-              }
-              return (
-                <Grid key={item.title} item xs={12} sm={6} md={4} lg={3} xl={2}>
-                  <Card
-                    title={item.title}
-                    description={item.description}
-                    newsUrl={item.url}
-                    imageUrl={item.urlToImage}
-                    datePublished={item.publishedAt}
-                  />
-                </Grid>
-              );
-            })
-        )
+            if (!item.title || !item.description || !item.urlToImage) {
+              return null;
+            }
+            return (
+              <Grid key={item.title} item xs={12} sm={6} md={4} lg={3} xl={2}>
+                <Card
+                  title={item.title}
+                  description={item.description}
+                  newsUrl={item.url}
+                  imageUrl={item.urlToImage}
+                  datePublished={item.publishedAt}
+                />
+              </Grid>
+            );
+          })
         ) : (
-  (
-                  <div>No news available</div>
-        )
+          <div>No news available</div>
         )}
       </Grid>
     </div>

@@ -1,0 +1,15 @@
+{
+  "name": "firebase-config",
+  "version": "1.0.0",
+  "description": "firebase config files",
+  "main": "config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Elmer C. Galo",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^7.21.1",
+    "firebase-admin": "^9.2.0"
+  }
+}

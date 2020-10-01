@@ -19,6 +19,10 @@ import Login from './pages/Login';
 /* Decode authentication Token
 -------------------------------------------------- */
 const token = localStorage.FBIdToken;
+/**
+    TODO:
+    - Verify this is a valid firebase token
+*/
 
 if (token) {
   const decodedToken = jwtDecode(token);
@@ -32,7 +36,6 @@ if (token) {
 }
 /* End of Decode authentication Token
 -------------------------------------------------- */
-
 
 function App() {
   return (

@@ -1,6 +1,12 @@
-import React, {useState} from 'react';
-import {Link as MuiLink } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+
+/* Redux */
+import { connect } from 'react-redux';
+import { loginUser } from '../actions/userActions';
+
+/* Material UI components */
+import { Link as MuiLink } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -45,22 +51,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login({history}) {
+const Login = ({ loginUser, history }) => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post('/api/login', { email, password })
-      .then((res) => {
-        console.log(res);
-        history.push('/');
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-      });
+    const userData = {
+      email,
+      password,
+    };
+    loginUser(userData, history);
   };
 
   return (
@@ -120,7 +122,7 @@ export default function Login({history}) {
               </Link>
             </Grid> */}
             <Grid item>
-              <Link variant="body2" component={MuiLink} to='/signup'>
+              <Link variant="body2" component={MuiLink} to="/signup">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
@@ -132,4 +134,15 @@ export default function Login({history}) {
       </Box>
     </Container>
   );
-}
+};
+
+Login.propTypes = {
+  user: PropTypes.object.isRequired,
+  loginUser: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps, { loginUser })(Login);

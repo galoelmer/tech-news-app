@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {Link as MuiLink} from 'react-router-dom';
-import axios from 'axios';
+
+/* Redux */
+import { connect } from 'react-redux';
+import { signupUser } from '../actions/userActions';
+
+/* Material UI components */
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -46,22 +52,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp({history}) {
+const SignUp = ({history, signupUser})  => {
   const classes = useStyles();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post('/api/signup', { email, password })
-      .then((res) => {
-        console.log(res);
-        history.push('/');
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-      });
+    const newUserData = {
+      name,
+      email,
+      password 
+    }
+    signupUser(newUserData, history);
   };
 
   return (
@@ -76,29 +80,20 @@ export default function SignUp({history}) {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            {/* <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="name"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="First Name"
+                id="name"
+                label="Full name"
                 autoFocus
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-              />
-            </Grid> */}
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
@@ -139,7 +134,7 @@ export default function SignUp({history}) {
           </Button>
           <Grid container justify="center">
             <Grid item>
-              <Link variant="body2" component={MuiLink} to='/login'>
+              <Link variant="body2" component={MuiLink} to="/login">
                 Already have an account? Login
               </Link>
             </Grid>
@@ -152,3 +147,14 @@ export default function SignUp({history}) {
     </Container>
   );
 }
+
+SignUp.propTypes = {
+  user: PropTypes.object.isRequired,
+  signupUser: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps, {signupUser})(SignUp);

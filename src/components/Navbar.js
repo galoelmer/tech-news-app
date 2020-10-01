@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,12 +20,12 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     '& a': {
       textDecoration: 'none',
-      color: '#fff'
-    }
+      color: '#fff',
+    },
   },
 }));
 
-export default function ButtonAppBar() {
+const Navbar = ({ authenticated, userName }) => {
   const classes = useStyles();
 
   return (
@@ -32,7 +33,7 @@ export default function ButtonAppBar() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            <Link to='/'>Tech News</Link>
+            <Link to="/">Tech News</Link>
           </Typography>
           {/* <IconButton
             edge="start"
@@ -42,14 +43,27 @@ export default function ButtonAppBar() {
           >
             <MenuIcon />
           </IconButton> */}
-          <Button color="inherit" component={Link} to="/login">
-            Login
-          </Button>
-          <Button color="inherit" component={Link} to="/signup">
-            Signup
-          </Button>
+          {authenticated ? (
+            <Typography variant="h6">Hello, {userName}</Typography>
+          ) : (
+            <>
+              <Button color="inherit" component={Link} to="/login">
+                Login
+              </Button>
+              <Button color="inherit" component={Link} to="/signup">
+                Signup
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  authenticated: state.user.authenticated,
+  userName: state.user.name
+});
+
+export default connect(mapStateToProps)(Navbar);

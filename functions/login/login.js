@@ -22,7 +22,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 201,
-      body: JSON.stringify(token),
+      body: JSON.stringify({token}),
     };
   } catch (error) {
     if (

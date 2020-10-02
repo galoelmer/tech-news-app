@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NewsCard({
+  id,
   title,
   description,
   newsUrl,
@@ -54,7 +55,7 @@ export default function NewsCard({
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} data-article-id={id}>
       <Link underline="none" href={newsUrl} target="_blank" rel="noopener noreferrer">
         <CardActionArea>
           <CardHeader

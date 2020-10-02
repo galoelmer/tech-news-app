@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 /* Redux */
 import { connect } from 'react-redux';
@@ -45,14 +47,16 @@ const Navbar = ({ authenticated, userName, logoutUser }) => {
           {authenticated ? (
             <Box display="flex" alignItems="center">
               <Typography variant="body1">Hello, {userName}</Typography>
-              <IconButton
-                className={classes.menuButton}
-                edge="end"
-                aria-label="logout"
-                onClick={() => logoutUser()}
-              >
-                <ExitToAppIcon />
-              </IconButton>
+              <Tippy placement='bottom-start' content='Logout'>
+                <IconButton
+                  className={classes.menuButton}
+                  edge="end"
+                  aria-label="logout"
+                  onClick={() => logoutUser()}
+                >
+                  <ExitToAppIcon />
+                </IconButton>
+              </Tippy>
             </Box>
           ) : (
             <>

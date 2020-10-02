@@ -41,6 +41,7 @@ export default function FullWidthGrid() {
             return (
               <Grid key={item.title} item xs={12} sm={6} md={4} lg={3} xl={2}>
                 <Card
+                  id={item.id}
                   title={item.title}
                   description={item.description}
                   newsUrl={item.url}

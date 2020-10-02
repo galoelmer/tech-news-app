@@ -15,10 +15,18 @@ export default function FullWidthGrid() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('/.netlify/functions/fetch-news')
-      .then((res) => res.json())
+    fetch('/.netlify/functions/fetch-news?from=firestore')
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
       .then((res) => {
         setData(res.data);
+      })
+      .catch((error) => {
+        console.error('Something went wrong: ', error);
       });
   }, []);
 

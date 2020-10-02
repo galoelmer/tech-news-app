@@ -1,8 +1,16 @@
 const fetch = require('node-fetch');
+const { v4: uuidv4 } = require('uuid');
 const { db } = require('../firebase-config/admin');
 
 const { REACT_APP_NEWS_API_KEY: API_KEY } = process.env;
 const URL = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}&category=technology`;
+
+const addIdToArticles = (data) => {
+  return data.articles.map((article) => {
+    article.id = uuidv4();
+    return article;
+  });
+};
 
 exports.handler = async function (event) {
   const getDataFrom = event.queryStringParameters.from;
@@ -27,6 +35,7 @@ exports.handler = async function (event) {
         return { statusCode: response.status, body: response.statusText };
       }
       data = await response.json();
+      addIdToArticles(data);
       await db.collection('news').doc('list').set(data);
       return { statusCode: response.status, body: response.statusText };
     }

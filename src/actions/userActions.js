@@ -1,26 +1,27 @@
 import { SET_USER, SET_UNAUTHENTICATED } from '../types';
+import { getNewsData } from './newsActions';
 
 import axios from 'axios';
 
 /* SignUp user action */
 export const signupUser = (newUserData, history) => (dispatch) => {
   axios
-  .post('/api/signup', newUserData)
-  .then((res) => {
-    setAuthenticationHeader(res.data.token);
-    dispatch(getUserData());
-    history.push('/');
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+    .post('/api/signup', newUserData)
+    .then((res) => {
+      setAuthenticationHeader(res.data.token);
+      dispatch(getUserData());
+      history.push('/');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 /* Login User action */
 export const loginUser = (userData, history) => (dispatch) => {
   axios
-  .post('/api/login', userData)
-  .then((res) => {
+    .post('/api/login', userData)
+    .then((res) => {
       setAuthenticationHeader(res.data.token);
       dispatch(getUserData());
       history.push('/');
@@ -36,6 +37,7 @@ export const getUserData = () => (dispatch) => {
     .get('/api/get-user-data')
     .then((res) => {
       dispatch({ type: SET_USER, payload: res.data });
+      dispatch(getNewsData(res.data.userId))
     })
     .catch((err) => console.log(err));
 };

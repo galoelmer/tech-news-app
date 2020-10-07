@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home = ({ userId, getNewsData, articles, authenticated }) => {
+const Home = ({ getNewsData, articles }) => {
   const classes = useStyles();
   useEffect(() => {
-    getNewsData(authenticated  ? userId : null);
-  }, [authenticated, getNewsData, userId]);
+    getNewsData();
+  }, [getNewsData]);
 
   return (
     <div className={classes.root}>
@@ -51,8 +51,6 @@ const Home = ({ userId, getNewsData, articles, authenticated }) => {
 };
 
 const mapStateToProps = (state) => ({
-  userId: state.user.id,
-  authenticated: state.user.authenticated,
   articles: state.newsData.articles,
 });
 

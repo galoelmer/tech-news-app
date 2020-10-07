@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
@@ -16,7 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
-import Box from '@material-ui/core/Box'
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,47 +26,68 @@ const useStyles = makeStyles((theme) => ({
     color: '#ae4e59',
   },
   title: {
-    flexGrow: 1,
+    // flexGrow: 1,
     '& a': {
       textDecoration: 'none',
       color: '#fff',
     },
   },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
 }));
 
 const Navbar = ({ authenticated, userName, logoutUser }) => {
   const classes = useStyles();
+  let history = useHistory();
+  
+  const handleLogOut = () => {
+    logoutUser();
+    history.push('/');
+  };
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           <Typography variant="h6" className={classes.title}>
             <Link to="/">Tech News</Link>
           </Typography>
           {authenticated ? (
-            <Box display="flex" alignItems="center">
-              <Typography variant="body1">Hello, {userName}</Typography>
-              <Tippy placement='bottom-start' content='Logout'>
-                <IconButton
-                  className={classes.menuButton}
-                  edge="end"
-                  aria-label="logout"
-                  onClick={() => logoutUser()}
-                >
-                  <ExitToAppIcon />
-                </IconButton>
-              </Tippy>
-            </Box>
-          ) : (
             <>
+              <Button
+                variant="outlined"
+                color="inherit"
+                size="small"
+                component={Link}
+                to="/favorites"
+              >
+                Favorites
+              </Button>
+              <Box display="flex" alignItems="center">
+                <Typography variant="body1">Hello, {userName}</Typography>
+                <Tippy placement="bottom-start" content="Logout">
+                  <IconButton
+                    className={classes.menuButton}
+                    edge="end"
+                    aria-label="logout"
+                    onClick={handleLogOut}
+                  >
+                    <ExitToAppIcon />
+                  </IconButton>
+                </Tippy>
+              </Box>
+            </>
+          ) : (
+            <Box>
               <Button color="inherit" component={Link} to="/login">
                 Login
               </Button>
               <Button color="inherit" component={Link} to="/signup">
                 Signup
               </Button>
-            </>
+            </Box>
           )}
         </Toolbar>
       </AppBar>

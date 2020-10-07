@@ -91,7 +91,9 @@ const NewsCard = ({
       ...(!isFavorite && { article }),
     };
 
-    const requestType = isFavorite ? 'remove-from-favorites' : 'add-to-favorites';
+    const requestType = isFavorite
+      ? 'remove-from-favorites'
+      : 'add-to-favorites';
 
     fetch(`/.netlify/functions/${requestType}`, {
       method: 'POST',
@@ -151,9 +153,11 @@ const NewsCard = ({
         </CardActionArea>
       </Link>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={handleFavorite}>
-          {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-        </IconButton>
+        {markFavorite === 'remove-icon' ? null : (
+          <IconButton aria-label="add to favorites" onClick={handleFavorite}>
+            {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          </IconButton>
+        )}
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>

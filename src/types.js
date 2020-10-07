@@ -5,4 +5,5 @@ export const SET_USER = 'SET_USER';
 
 export const SET_NEWS_DATA = 'SET_NEWS_DATA';
 export const MARK_FAVORITE_NEWS = 'MARK_FAVORITE_NEWS';
+export const UNMARK_FAVORITE_NEWS = 'UNMARK_FAVORITE_NEWS';
 

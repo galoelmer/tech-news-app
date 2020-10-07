@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '../components/Card';
 
 /* Redux */
 import { connect } from 'react-redux';
+// import { getNewsData } from '../actions/newsActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,13 +14,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home = ({ articles }) => {
+const Favorites = ({ articles }) => {
   const classes = useStyles();
+
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    setList(() => {
+      return articles.filter((article) => article.favorite === true);
+    });
+  }, [articles]);
+
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        {articles.length ? (
-          articles.map((item) => {
+        {list.length ? (
+          list.map((item) => {
             if (!item.title || !item.description || !item.urlToImage) {
               return null;
             }
@@ -32,13 +42,13 @@ const Home = ({ articles }) => {
                   newsUrl={item.url}
                   imageUrl={item.urlToImage}
                   datePublished={item.publishedAt}
-                  markFavorite={item.favorite}
+                  markFavorite="remove-icon"
                 />
               </Grid>
             );
           })
         ) : (
-          <div>No news available</div>
+          <div>You don't have favorites yet</div>
         )}
       </Grid>
     </div>
@@ -49,4 +59,4 @@ const mapStateToProps = (state) => ({
   articles: state.newsData.articles,
 });
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(Favorites);

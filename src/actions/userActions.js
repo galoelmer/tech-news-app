@@ -1,4 +1,4 @@
-import { SET_USER, SET_UNAUTHENTICATED } from '../types';
+import { SET_USER, SET_UNAUTHENTICATED, UNMARK_FAVORITE_NEWS } from '../types';
 import { getNewsData } from './newsActions';
 
 import axios from 'axios';
@@ -37,7 +37,7 @@ export const getUserData = () => (dispatch) => {
     .get('/api/get-user-data')
     .then((res) => {
       dispatch({ type: SET_USER, payload: res.data });
-      dispatch(getNewsData(res.data.userId))
+      dispatch(getNewsData(res.data.userId));
     })
     .catch((err) => console.log(err));
 };
@@ -47,6 +47,7 @@ export const logoutUser = () => (dispatch) => {
   localStorage.removeItem('FBIdToken');
   delete axios.defaults.headers.common['Authorization'];
   dispatch({ type: SET_UNAUTHENTICATED });
+  dispatch({ type: UNMARK_FAVORITE_NEWS });
 };
 
 /* Set firebase token to HTTP Authorization header and store it in localStorage api  */

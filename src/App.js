@@ -8,7 +8,7 @@ import Navbar from './components/Navbar';
 import { Provider } from 'react-redux';
 import store from './store';
 import { SET_AUTHENTICATED } from './types';
-import {getUserData} from './actions/userActions';
+import {getUserData, logoutUser} from './actions/userActions';
 
 /* Pages */
 import Home from './pages/Home';
@@ -27,7 +27,7 @@ const token = localStorage.FBIdToken;
 if (token) {
   const decodedToken = jwtDecode(token);
   if (decodedToken.exp * 1000 < Date.now()) {
-    window.location.href = '/login';
+    store.dispatch(logoutUser());
   } else {
     store.dispatch({ type: SET_AUTHENTICATED });
     axios.defaults.headers.common['Authorization'] = token;

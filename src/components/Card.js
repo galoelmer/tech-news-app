@@ -1,4 +1,10 @@
 import React from 'react';
+
+/* Redux */
+import { connect } from 'react-redux';
+import { markFavoriteNews } from '../actions/newsActions';
+
+/* Material UI components */
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -9,10 +15,11 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ShareIcon from '@material-ui/icons/Share';
 // import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,19 +51,68 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NewsCard({
+const NewsCard = ({
+  userId,
   id,
   title,
   description,
   newsUrl,
   imageUrl,
   datePublished,
-}) {
+  markFavorite,
+  markFavoriteNews,
+}) => {
   const classes = useStyles();
+  const [isFavorite, setIsFavorite] = React.useState(false);
+  /**
+      TODO:
+      - Re-work on how to handle favorites news
+  */
+  React.useEffect(() => {
+    setIsFavorite(markFavorite);
+  }, [markFavorite]);
+
+  // Handle click to add/remove from favorite button
+  const handleFavorite = () => {
+    setIsFavorite((prevState) => !prevState);
+    markFavoriteNews(id);
+
+    const article = {
+      description,
+      publishedAt: datePublished,
+      title,
+      url: newsUrl,
+      urlToImage: imageUrl,
+    };
+
+    const data = {
+      articleId: id,
+      userId,
+      ...(!isFavorite && { article }),
+    };
+
+    const requestType = isFavorite ? 'remove-from-favorites' : 'add-to-favorites';
+
+    fetch(`/.netlify/functions/${requestType}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <Card className={classes.root} data-article-id={id}>
-      <Link underline="none" href={newsUrl} target="_blank" rel="noopener noreferrer">
+      <Link
+        underline="none"
+        href={newsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <CardActionArea>
           <CardHeader
             avatar={
@@ -95,8 +151,8 @@ export default function NewsCard({
         </CardActionArea>
       </Link>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+        <IconButton aria-label="add to favorites" onClick={handleFavorite}>
+          {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         </IconButton>
         <IconButton aria-label="share">
           <ShareIcon />
@@ -104,4 +160,10 @@ export default function NewsCard({
       </CardActions>
     </Card>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  userId: state.user.id,
+});
+
+export default connect(mapStateToProps, { markFavoriteNews })(NewsCard);

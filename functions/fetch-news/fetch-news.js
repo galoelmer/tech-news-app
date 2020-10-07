@@ -12,8 +12,26 @@ const addIdToArticles = (data) => {
   });
 };
 
+// Check if user added article to favorites
+const markFavorites = async (data, userId) => {
+  const userFavoritesList = await db
+    .collection('favorites')
+    .where('users', 'array-contains', userId)
+    .get();
+
+  return data.articles.map((article) => {
+    userFavoritesList.forEach((doc) => {
+      if (doc.id === article.id) {
+        article.favorite = true;
+      }
+    });
+    return article;
+  });
+};
+
 exports.handler = async function (event) {
   const getDataFrom = event.queryStringParameters.from;
+  const userId = event.queryStringParameters.userId;
 
   try {
     let data;
@@ -23,9 +41,12 @@ exports.handler = async function (event) {
           statusCode: 400,
           body: 'Must be a GET request',
         };
-      const newsRef = db.collection('news').doc('list');
-      const doc = await newsRef.get();
-      data = doc.data();
+      const docRef = await db.collection('news').doc('list').get();
+      data = docRef.data();
+
+      if (userId) {
+        await markFavorites(data, userId);
+      }
     } else {
       const response = await fetch(URL, {
         headers: { Accept: 'application/json' },

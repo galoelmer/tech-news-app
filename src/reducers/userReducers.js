@@ -18,7 +18,8 @@ export default function (state = initialState, action) {
     case SET_USER:
       return {
         authenticated: true,
-        name: action.payload.userName
+        name: action.payload.userName,
+        id: action.payload.userId
       };
 
     default:

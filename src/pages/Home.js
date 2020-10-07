@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '../components/Card';
+
+/* Redux */
+import { connect } from 'react-redux';
+import { getNewsData } from '../actions/newsActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -10,31 +14,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FullWidthGrid() {
+const Home = ({ userId, getNewsData, articles, authenticated }) => {
   const classes = useStyles();
-  const [data, setData] = useState([]);
-
   useEffect(() => {
-    fetch('/.netlify/functions/fetch-news?from=firestore')
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return res.json();
-      })
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((error) => {
-        console.error('Something went wrong: ', error);
-      });
-  }, []);
+    getNewsData(authenticated  ? userId : null);
+  }, [authenticated, getNewsData, userId]);
 
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        {data.length ? (
-          data.map((item) => {
+        {articles.length ? (
+          articles.map((item) => {
             if (!item.title || !item.description || !item.urlToImage) {
               return null;
             }
@@ -47,6 +37,7 @@ export default function FullWidthGrid() {
                   newsUrl={item.url}
                   imageUrl={item.urlToImage}
                   datePublished={item.publishedAt}
+                  markFavorite={item.favorite}
                 />
               </Grid>
             );
@@ -57,4 +48,12 @@ export default function FullWidthGrid() {
       </Grid>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  userId: state.user.id,
+  authenticated: state.user.authenticated,
+  articles: state.newsData.articles,
+});
+
+export default connect(mapStateToProps, { getNewsData })(Home);

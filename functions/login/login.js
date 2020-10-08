@@ -1,4 +1,4 @@
-const firebase = require('../firebase-config/config');
+const {firebase} = require('../firebase-config/config');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST')

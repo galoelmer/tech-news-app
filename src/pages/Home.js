@@ -32,6 +32,7 @@ const Home = ({ articles }) => {
                   newsUrl={item.url}
                   imageUrl={item.urlToImage}
                   datePublished={item.publishedAt}
+                  imageSource={item.imageSource}
                   markFavorite={item.favorite}
                 />
               </Grid>

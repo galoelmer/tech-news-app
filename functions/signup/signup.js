@@ -1,4 +1,4 @@
-const firebase = require('../firebase-config/config');
+const {firebase} = require('../firebase-config/config');
 const { db } = require('../firebase-config/admin');
 
 exports.handler = async (event, context, callback) => {

@@ -46,8 +46,10 @@ const useStyles = makeStyles((theme) => ({
     transform: 'rotate(180deg)',
   },
   avatar: {
-    backgroundColor: '#ed6663',
-    fontSize: '1em',
+    fontSize: '1.2em',
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+    border: '1px solid #ccc',
   },
   description: {
     overflow: 'hidden',
@@ -62,6 +64,7 @@ const NewsCard = ({
   description,
   newsUrl,
   imageUrl,
+  imageSource,
   datePublished,
   markFavorite,
   markFavoriteNews,
@@ -130,10 +133,12 @@ const NewsCard = ({
             avatar={
               <Avatar
                 variant="rounded"
-                aria-label="recipe"
+                aria-label="Source Logo"
                 className={classes.avatar}
+                alt="news"
+                src={imageSource}
               >
-                News
+                Tech News
               </Avatar>
             }
             // action={

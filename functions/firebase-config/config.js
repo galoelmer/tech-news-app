@@ -17,4 +17,4 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.firestore();
 
-module.exports = firebase;
+module.exports = { firebase, firebaseConfig };

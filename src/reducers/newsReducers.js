@@ -16,25 +16,29 @@ export default function (state = initialState, action) {
         articles: action.payload,
       };
 
-    case MARK_FAVORITE_NEWS: {
-      state.articles.forEach((article) => {
-        if (article.id === action.payload) {
-          article.favorite = article.favorite ? !article.favorite : true;
-          return { ...state };
-        }
-      });
-      return { ...state };
-    }
-
-    case UNMARK_FAVORITE_NEWS: {
-      state.articles.forEach((article) => {
-        if (article.favorite) delete article.favorite;
+    case MARK_FAVORITE_NEWS:
+      return Object.assign({}, state, {
+        articles: markFavoriteNews(action.payload, state.articles),
       });
 
-      return { ...state };
-    }
+    case UNMARK_FAVORITE_NEWS:
+      return Object.assign({}, state, {
+        articles: state.articles.map((article) => {
+          if (!article.hasOwnProperty('favorite')) return article;
+          delete article.favorite;
+          return article;
+        }),
+      });
 
     default:
       return state;
   }
 }
+
+const markFavoriteNews = (id, articles) => {
+  return articles.map((article) => {
+    if (article.id !== id) return article;
+    article.favorite = article.favorite ? !article.favorite : true;
+    return article;
+  });
+};

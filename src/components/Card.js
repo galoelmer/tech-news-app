@@ -1,4 +1,6 @@
 import React from 'react';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 /* Redux */
 import { connect } from 'react-redux';
@@ -19,6 +21,7 @@ import Link from '@material-ui/core/Link';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ShareIcon from '@material-ui/icons/Share';
+import DeleteIcon from '@material-ui/icons/Delete';
 // import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const useStyles = makeStyles((theme) => ({
@@ -153,11 +156,25 @@ const NewsCard = ({
         </CardActionArea>
       </Link>
       <CardActions disableSpacing>
-        {markFavorite === 'remove-icon' ? null : (
+        <Tippy
+          content={
+            markFavorite === 'remove-icon'
+              ? 'Remove'
+              : isFavorite
+              ? 'Remove from Favorites'
+              : 'Add to Favorites'
+          }
+        >
           <IconButton aria-label="add to favorites" onClick={handleFavorite}>
-            {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            {markFavorite === 'remove-icon' ? (
+              <DeleteIcon htmlColor="#ed6999" />
+            ) : isFavorite ? (
+              <FavoriteIcon />
+            ) : (
+              <FavoriteBorderIcon />
+            )}
           </IconButton>
-        )}
+        </Tippy>
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>

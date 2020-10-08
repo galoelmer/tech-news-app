@@ -5,7 +5,6 @@ import Card from '../components/Card';
 
 /* Redux */
 import { connect } from 'react-redux';
-// import { getNewsData } from '../actions/newsActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
@@ -64,9 +65,11 @@ const NewsCard = ({
   datePublished,
   markFavorite,
   markFavoriteNews,
+  authenticated,
 }) => {
   const classes = useStyles();
   const [isFavorite, setIsFavorite] = React.useState(false);
+  const history = useHistory();
   /**
       TODO:
       - Re-work on how to handle favorites news
@@ -77,37 +80,41 @@ const NewsCard = ({
 
   // Handle click to add/remove from favorite button
   const handleFavorite = () => {
-    setIsFavorite((prevState) => !prevState);
-    markFavoriteNews(id);
+    if (!authenticated) {
+      history.push('/login');
+    } else {
+      setIsFavorite((prevState) => !prevState);
+      markFavoriteNews(id);
 
-    const article = {
-      description,
-      publishedAt: datePublished,
-      title,
-      url: newsUrl,
-      urlToImage: imageUrl,
-    };
+      const article = {
+        description,
+        publishedAt: datePublished,
+        title,
+        url: newsUrl,
+        urlToImage: imageUrl,
+      };
 
-    const data = {
-      articleId: id,
-      userId,
-      ...(!isFavorite && { article }),
-    };
+      const data = {
+        articleId: id,
+        userId,
+        ...(!isFavorite && { article }),
+      };
 
-    const requestType = isFavorite
-      ? 'remove-from-favorites'
-      : 'add-to-favorites';
+      const requestType = isFavorite
+        ? 'remove-from-favorites'
+        : 'add-to-favorites';
 
-    fetch(`/.netlify/functions/${requestType}`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-      .then((res) => {
-        console.log(res);
+      fetch(`/.netlify/functions/${requestType}`, {
+        method: 'POST',
+        body: JSON.stringify(data),
       })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   return (
@@ -184,6 +191,7 @@ const NewsCard = ({
 };
 
 const mapStateToProps = (state) => ({
+  authenticated: state.user.authenticated,
   userId: state.user.id,
 });
 

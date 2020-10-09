@@ -6,6 +6,10 @@ import 'tippy.js/dist/tippy.css';
 /* Redux */
 import { connect } from 'react-redux';
 import { markFavoriteNews } from '../actions/newsActions';
+import {
+  addToUserFavorites,
+  removeFromFavorites,
+} from '../actions/userActions';
 
 /* Material UI components */
 import { makeStyles } from '@material-ui/core/styles';
@@ -66,9 +70,11 @@ const NewsCard = ({
   imageUrl,
   imageSource,
   datePublished,
-  markFavorite,
+  markFavorite = false,
   markFavoriteNews,
   authenticated,
+  addToUserFavorites,
+  removeFromFavorites,
 }) => {
   const classes = useStyles();
   const [isFavorite, setIsFavorite] = React.useState(false);
@@ -78,7 +84,7 @@ const NewsCard = ({
       - Re-work on how to handle favorites news
   */
   React.useEffect(() => {
-    setIsFavorite(markFavorite);
+    setIsFavorite(!!markFavorite);
   }, [markFavorite]);
 
   // Handle click to add/remove from favorite button
@@ -86,38 +92,44 @@ const NewsCard = ({
     if (!authenticated) {
       history.push('/login');
     } else {
-      setIsFavorite((prevState) => !prevState);
-      markFavoriteNews(id);
-
       const article = {
-        description,
-        publishedAt: datePublished,
+        articleId: id,
         title,
+        description,
         url: newsUrl,
         urlToImage: imageUrl,
+        imageSource,
+        publishedAt: datePublished,
       };
-
+      
+      isFavorite || markFavorite === 'remove-icon'
+      ? removeFromFavorites(id)
+      : addToUserFavorites(article);
+      
+      markFavoriteNews(id);
+      
       const data = {
         articleId: id,
         userId,
         ...(!isFavorite && { article }),
       };
-
+      
       const requestType = isFavorite
-        ? 'remove-from-favorites'
-        : 'add-to-favorites';
-
+      ? 'remove-from-favorites'
+      : 'add-to-favorites';
+      
       fetch(`/.netlify/functions/${requestType}`, {
         method: 'POST',
         body: JSON.stringify(data),
       })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      .then((res) => {
+        console.log(res.ok);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     }
+    setIsFavorite((prevState) => !prevState);
   };
 
   return (
@@ -200,4 +212,8 @@ const mapStateToProps = (state) => ({
   userId: state.user.id,
 });
 
-export default connect(mapStateToProps, { markFavoriteNews })(NewsCard);
+export default connect(mapStateToProps, {
+  markFavoriteNews,
+  addToUserFavorites,
+  removeFromFavorites,
+})(NewsCard);

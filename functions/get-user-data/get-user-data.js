@@ -25,6 +25,7 @@ exports.handler = async (event, context, callback) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
+    // Get user data
     const userRef = db.collection('users').doc(decodedToken.uid);
     const doc = await userRef.get();
     const userData = doc.data();
@@ -38,11 +39,24 @@ exports.handler = async (event, context, callback) => {
       });
     }
 
+    // Get user favorites
+    let favorites = [];
+    const snapshot = await db
+      .collection('favorites')
+      .where('users', 'array-contains', decodedToken.uid)
+      .get();
+    snapshot.forEach((doc) => {
+      const newsArticle = doc.data();
+      delete newsArticle.users;
+      favorites.push(newsArticle);
+    });
+
     return callback(null, {
       statusCode: 200,
       body: JSON.stringify({
         userName: userData.name,
         userId: doc.id,
+        favorites,
       }),
     });
   } catch (error) {

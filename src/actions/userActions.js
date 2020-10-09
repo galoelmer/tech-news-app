@@ -1,4 +1,10 @@
-import { SET_USER, SET_UNAUTHENTICATED, UNMARK_FAVORITE_NEWS } from '../types';
+import {
+  SET_USER,
+  SET_UNAUTHENTICATED,
+  UNMARK_FAVORITE_NEWS,
+  ADD_TO_FAVORITES,
+  REMOVE_FROM_FAVORITES,
+} from '../types';
 import { getNewsData } from './newsActions';
 
 import axios from 'axios';
@@ -48,6 +54,16 @@ export const logoutUser = () => (dispatch) => {
   delete axios.defaults.headers.common['Authorization'];
   dispatch({ type: SET_UNAUTHENTICATED });
   dispatch({ type: UNMARK_FAVORITE_NEWS });
+};
+
+/* Add favorite news to user favorite list */
+export const addToUserFavorites = (news) => (dispatch) => {
+  dispatch({ type: ADD_TO_FAVORITES, payload: news });
+};
+
+/* Remove favorite news from user favorite list */
+export const removeFromFavorites = (id) => (dispatch) => {
+  dispatch({ type: REMOVE_FROM_FAVORITES, payload: id });
 };
 
 /* Set firebase token to HTTP Authorization header and store it in localStorage api  */

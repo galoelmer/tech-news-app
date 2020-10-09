@@ -70,7 +70,7 @@ exports.handler = async function (event) {
       addIdToArticles(data);
       addLogoUrl(data);
       await db.collection('news').doc('list').set(data);
-      return { statusCode: response.status, body: JSON.stringify(data) };
+      return { statusCode: response.status, body: response.statusText };
     }
 
     return {

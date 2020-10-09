@@ -137,12 +137,7 @@ const Login = ({ loginUser, history }) => {
 };
 
 Login.propTypes = {
-  user: PropTypes.object.isRequired,
   loginUser: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
-
-export default connect(mapStateToProps, { loginUser })(Login);
+export default connect(null, { loginUser })(Login);

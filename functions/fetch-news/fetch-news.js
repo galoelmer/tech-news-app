@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const { v4: uuidv4 } = require('uuid');
 const admin = require('firebase-admin');
 
-var serviceAccount = require('./serviceAccountKey.json');
+var serviceAccount = require('./serviceAccountKey');
 
 if (!admin.apps.length) {
   admin.initializeApp({

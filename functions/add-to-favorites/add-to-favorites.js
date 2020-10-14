@@ -1,8 +1,8 @@
 const admin = require('firebase-admin');
 
-var serviceAccount = require('./serviceAccountKey.json');
+var serviceAccount = require('./serviceAccountKey');
 
-if(!admin.apps.length) {
+if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://tech-news-app-4e549.firebaseio.com',

@@ -2,7 +2,7 @@ const firebase = require('firebase/app');
 const admin = require('firebase-admin');
 require('firebase/auth');
 
-var serviceAccount = require('./serviceAccountKey.json');
+var serviceAccount = require('./serviceAccountKey');
 var firebaseConfig = {
   apiKey: 'AIzaSyBFDLApFjnSiv7Jb7nOBDxTwJa7ntZy-_A',
   authDomain: 'tech-news-app-4e549.firebaseapp.com',
@@ -13,8 +13,10 @@ var firebaseConfig = {
   appId: '1:762605078939:web:48a9ef048a78eddcd6793e',
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+}
 
 if (!admin.apps.length) {
   admin.initializeApp({

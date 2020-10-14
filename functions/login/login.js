@@ -11,8 +11,10 @@ var firebaseConfig = {
   appId: '1:762605078939:web:48a9ef048a78eddcd6793e',
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+}
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST')
@@ -36,7 +38,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 201,
-      body: JSON.stringify({token}),
+      body: JSON.stringify({ token }),
     };
   } catch (error) {
     if (

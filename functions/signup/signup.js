@@ -1,5 +1,29 @@
-const {firebase} = require('../firebase-config/config');
-const { db } = require('../firebase-config/admin');
+const firebase = require('firebase/app');
+const admin = require('firebase-admin');
+require('firebase/auth');
+
+var serviceAccount = require('./serviceAccountKey.json');
+var firebaseConfig = {
+  apiKey: 'AIzaSyBFDLApFjnSiv7Jb7nOBDxTwJa7ntZy-_A',
+  authDomain: 'tech-news-app-4e549.firebaseapp.com',
+  databaseURL: 'https://tech-news-app-4e549.firebaseio.com',
+  projectId: 'tech-news-app-4e549',
+  storageBucket: 'tech-news-app-4e549.appspot.com',
+  messagingSenderId: '762605078939',
+  appId: '1:762605078939:web:48a9ef048a78eddcd6793e',
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://tech-news-app-4e549.firebaseio.com',
+  });
+}
+
+const db = admin.firestore();
 
 exports.handler = async (event, context, callback) => {
   if (event.httpMethod !== 'POST')

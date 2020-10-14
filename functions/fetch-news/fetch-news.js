@@ -1,7 +1,17 @@
 const fetch = require('node-fetch');
 const { v4: uuidv4 } = require('uuid');
-const { db } = require('../firebase-config/admin');
-const { firebaseConfig } = require('../firebase-config/config');
+const admin = require('firebase-admin');
+
+var serviceAccount = require('./serviceAccountKey.json');
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://tech-news-app-4e549.firebaseio.com',
+  });
+}
+
+const db = admin.firestore();
 
 const { REACT_APP_NEWS_API_KEY: API_KEY } = process.env;
 const URL = `https://newsapi.org/v2/top-headlines?language=en&sources=engadget,techradar,the-next-web,the-verge,wired,techCrunch&apiKey=${API_KEY}`;
@@ -17,7 +27,7 @@ const addIdToArticles = (data) => {
 const addLogoUrl = (data) => {
   return data.articles.map((article) => {
     let imageName = article.source.id;
-    let imageURL = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/logos%2F${imageName}.png?alt=media`;
+    let imageURL = `https://firebasestorage.googleapis.com/v0/b/tech-news-app-4e549.appspot.com/o/logos%2F${imageName}.png?alt=media`;
     article.imageSource = imageURL;
     return article;
   });

@@ -25,9 +25,8 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import ShareIcon from '@material-ui/icons/Share';
 import DeleteIcon from '@material-ui/icons/Delete';
-// import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ShareLinks from './ShareLinks';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -101,33 +100,33 @@ const NewsCard = ({
         imageSource,
         publishedAt: datePublished,
       };
-      
+
       isFavorite || markFavorite === 'remove-icon'
-      ? removeFromFavorites(id)
-      : addToUserFavorites(article);
-      
+        ? removeFromFavorites(id)
+        : addToUserFavorites(article);
+
       markFavoriteNews(id);
-      
+
       const data = {
         articleId: id,
         userId,
         ...(!isFavorite && { article }),
       };
-      
+
       const requestType = isFavorite
-      ? 'remove-from-favorites'
-      : 'add-to-favorites';
-      
+        ? 'remove-from-favorites'
+        : 'add-to-favorites';
+
       fetch(`/.netlify/functions/${requestType}`, {
         method: 'POST',
         body: JSON.stringify(data),
       })
-      .then((res) => {
-        console.log(res.ok);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((res) => {
+          console.log(res.ok);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
     setIsFavorite((prevState) => !prevState);
   };
@@ -199,9 +198,7 @@ const NewsCard = ({
             )}
           </IconButton>
         </Tippy>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
+        <ShareLinks url={newsUrl} title={title} description={description} />
       </CardActions>
     </Card>
   );

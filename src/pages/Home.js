@@ -3,6 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '../components/Card';
 
+/**
+    TODO:
+    - Remove test data after development process
+*/
+/* TEST DATA */
+// import data from '../data';
+
 /* Redux */
 import { connect } from 'react-redux';
 

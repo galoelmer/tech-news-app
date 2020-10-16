@@ -18,20 +18,25 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     margin: '30px',
   },
+  card: {
+    minHeight: 500,
+  },
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
 }));
 
-const Home = ({ articles }) => {
+const Home = ({ articles, loading }) => {
   const classes = useStyles();
+  console.log(loading);
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        {articles.length ? (
-          articles.map((item) => {
-            if (!item.title || !item.description || !item.urlToImage) {
-              return null;
-            }
-            return (
-              <Grid key={item.title} item xs={12} sm={6} md={4} lg={3} xl={2}>
+        {(loading ? Array.from(new Array(12)) : articles).map((item, index) => {
+          return (
+            <Grid key={index} item xs={12} sm={6} md={4} lg={3} xl={2}>
+              {item ? (
                 <Card
                   id={item.id}
                   title={item.title}
@@ -42,12 +47,12 @@ const Home = ({ articles }) => {
                   imageSource={item.imageSource}
                   markFavorite={item.favorite}
                 />
-              </Grid>
-            );
-          })
-        ) : (
-          <div>No news available</div>
-        )}
+              ) : (
+                <Card />
+              )}
+            </Grid>
+          );
+        })}
       </Grid>
     </div>
   );
@@ -55,6 +60,7 @@ const Home = ({ articles }) => {
 
 const mapStateToProps = (state) => ({
   articles: state.newsData.articles,
+  loading: state.newsData.loading,
 });
 
 export default connect(mapStateToProps)(Home);

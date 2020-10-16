@@ -2,10 +2,12 @@ import {
   SET_NEWS_DATA,
   MARK_FAVORITE_NEWS,
   UNMARK_FAVORITE_NEWS,
+  LOADING_DATA,
 } from '../types';
 
 const initialState = {
   articles: [],
+  loading: false,
 };
 
 export default function (state = initialState, action) {
@@ -14,6 +16,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         articles: action.payload,
+        loading: false,
       };
 
     case MARK_FAVORITE_NEWS:
@@ -29,6 +32,12 @@ export default function (state = initialState, action) {
           return article;
         }),
       });
+
+    case LOADING_DATA:
+      return {
+        ...state,
+        loading: true,
+      };
 
     default:
       return state;

@@ -67,6 +67,7 @@ export default function SimpleMenu({ url, title, description }) {
           aria-controls="share-links-menu"
           aria-haspopup="true"
           onClick={handleClick}
+          disabled={!url}
         >
           <ShareIcon />
         </IconButton>

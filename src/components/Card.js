@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -27,6 +27,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ShareLinks from './ShareLinks';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,16 +38,6 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
     paddingTop: '56.25%', // 16:9
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
   },
   avatar: {
     fontSize: '1.2em',
@@ -76,15 +67,30 @@ const NewsCard = ({
   removeFromFavorites,
 }) => {
   const classes = useStyles();
-  const [isFavorite, setIsFavorite] = React.useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
+  const [loadingImage, setLoadingImage] = useState(true);
   const history = useHistory();
   /**
       TODO:
       - Re-work on how to handle favorites news
   */
-  React.useEffect(() => {
+  useEffect(() => {
     setIsFavorite(!!markFavorite);
   }, [markFavorite]);
+
+  const fetchImage = (src) => {
+    const loadingImage = new Image();
+    loadingImage.src = src;
+    loadingImage.onload = () => {
+      setCurrentImage(loadingImage.src);
+      setLoadingImage(false);
+    };
+  };
+
+  useEffect(() => {
+    fetchImage(imageUrl);
+  }, [imageUrl]);
 
   // Handle click to add/remove from favorite button
   const handleFavorite = () => {
@@ -135,46 +141,84 @@ const NewsCard = ({
     <Card className={classes.root} data-article-id={id}>
       <Link
         underline="none"
-        href={newsUrl}
+        href={newsUrl || '#'}
         target="_blank"
         rel="noopener noreferrer"
       >
         <CardActionArea>
           <CardHeader
             avatar={
-              <Avatar
-                variant="rounded"
-                aria-label="Source Logo"
-                className={classes.avatar}
-                alt="news"
-                src={imageSource}
-              >
-                Tech News
-              </Avatar>
+              imageSource ? (
+                <Avatar
+                  variant="rounded"
+                  aria-label="Source Logo"
+                  className={classes.avatar}
+                  alt="news"
+                  src={imageSource}
+                >
+                  Tech News
+                </Avatar>
+              ) : (
+                <Skeleton
+                  animation="wave"
+                  variant="rect"
+                  width={40}
+                  height={40}
+                />
+              )
             }
-            // action={
-            //   <IconButton aria-label="settings">
-            //     <MoreVertIcon />
-            //   </IconButton>
-            // }
-            title={title.slice(0, 100) + '...' || ''}
-            subheader={datePublished || ''}
+            title={
+              title ? (
+                title.slice(0, 100) + '...'
+              ) : (
+                <Skeleton height={10} width="90%" style={{ marginBottom: 6 }} />
+              )
+            }
+            subheader={
+              datePublished ? (
+                datePublished
+              ) : (
+                <Skeleton height={10} width="40%" />
+              )
+            }
           />
-          <CardMedia
-            className={classes.media}
-            image={imageUrl || ''}
-            title={title || ''}
-          />
+          {!loadingImage ? (
+            <CardMedia
+              className={classes.media}
+              image={currentImage}
+              title={title || ''}
+            />
+          ) : (
+            <Skeleton
+              variant="rect"
+              animation="wave"
+              className={classes.media}
+            />
+          )}
           <CardContent>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              component="p"
-              className={classes.description}
-            >
-              {(description && description.slice(0, 170)) + '...' ||
-                'No description available'}
-            </Typography>
+            {description ? (
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                component="p"
+                className={classes.description}
+              >
+                {(description && description.slice(0, 170)) + '...' ||
+                  'No description available'}
+              </Typography>
+            ) : (
+              <React.Fragment>
+                {Array.from(new Array(5)).map((item, index) => (
+                  <Skeleton
+                    key={index}
+                    height={15}
+                    style={{ marginBottom: 6 }}
+                  />
+                ))}
+
+                <Skeleton height={15} width="80%" />
+              </React.Fragment>
+            )}
           </CardContent>
         </CardActionArea>
       </Link>
@@ -188,7 +232,11 @@ const NewsCard = ({
               : 'Add to Favorites'
           }
         >
-          <IconButton aria-label="add to favorites" onClick={handleFavorite}>
+          <IconButton
+            aria-label="add to favorites"
+            onClick={handleFavorite}
+            disabled={!id}
+          >
             {markFavorite === 'remove-icon' ? (
               <DeleteIcon htmlColor="#ed6999" />
             ) : isFavorite ? (

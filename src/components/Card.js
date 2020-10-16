@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { formatDistanceStrict } from 'date-fns';
 import { useHistory } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -31,6 +32,9 @@ import Skeleton from '@material-ui/lab/Skeleton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     maxWidth: 400,
     maxHeight: 500,
     minHeight: 500,
@@ -169,14 +173,20 @@ const NewsCard = ({
             }
             title={
               title ? (
-                title.slice(0, 100) + '...'
+                title.slice(0, 75) + '...'
               ) : (
                 <Skeleton height={10} width="90%" style={{ marginBottom: 6 }} />
               )
             }
             subheader={
               datePublished ? (
-                datePublished
+                `Posted: ${formatDistanceStrict(
+                  new Date(datePublished),
+                  new Date(),
+                  {
+                    addSuffix: true,
+                  }
+                )}`
               ) : (
                 <Skeleton height={10} width="40%" />
               )

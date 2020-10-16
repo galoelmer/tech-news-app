@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = ({ articles, loading }) => {
   const classes = useStyles();
-  console.log(loading);
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>

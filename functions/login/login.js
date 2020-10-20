@@ -1,5 +1,6 @@
 const firebase = require('firebase/app');
 require('firebase/auth');
+var validator = require('validator');
 
 var firebaseConfig = {
   apiKey: 'AIzaSyBFDLApFjnSiv7Jb7nOBDxTwJa7ntZy-_A',
@@ -16,6 +17,22 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
+// Validate login data
+function validateLoginData({ email, password }) {
+  let errors = {};
+  if (validator.isEmpty(email)) {
+    errors.email = 'Must not be empty';
+  } else if (!validator.isEmail(email)) {
+    errors.email = 'Must be a valid email address';
+  }
+  if (validator.isEmpty(password)) errors.password = 'Must not be empty';
+
+  return {
+    errors,
+    valid: Object.keys(errors).length === 0 ? true : false,
+  };
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST')
     return {
@@ -23,12 +40,18 @@ exports.handler = async (event) => {
       body: 'Must POST to this function',
     };
 
-  /**
-   * TODO:
-   * - Add user input validation
-   */
+  console.log(JSON.parse(event.body));
+
+  // Server input validation
+  const { valid, errors } = validateLoginData(JSON.parse(event.body));
+  if (!valid)
+    return {
+      statusCode: 400,
+      body: JSON.stringify(errors),
+    };
 
   const { email, password } = JSON.parse(event.body);
+
   try {
     const data = await firebase
       .auth()

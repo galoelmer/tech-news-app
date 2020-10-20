@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /* Redux */
@@ -51,10 +51,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = ({ loginUser, history }) => {
+const Login = ({ loginUser, history, UI }) => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+
+  console.log(UI);
+
+  useEffect(() => {
+    setErrors(UI.errors || {});
+  }, [UI]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -76,6 +83,8 @@ const Login = ({ loginUser, history }) => {
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
+            error={!!errors.email}
+            helperText={errors.email}
             variant="outlined"
             margin="normal"
             required
@@ -89,6 +98,8 @@ const Login = ({ loginUser, history }) => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
+            error={!!errors.password}
+            helperText={errors.password}
             variant="outlined"
             margin="normal"
             required
@@ -138,6 +149,11 @@ const Login = ({ loginUser, history }) => {
 
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
+  UI: PropTypes.object.isRequired,
 };
 
-export default connect(null, { loginUser })(Login);
+const mapStateToProps = (state) => ({
+  UI: state.UI,
+});
+
+export default connect(mapStateToProps, { loginUser })(Login);

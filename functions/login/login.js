@@ -76,6 +76,15 @@ exports.handler = async (event) => {
       };
     }
 
+    if (error.code === 'auth/too-many-requests')
+      return {
+        statusCode: 429,
+        body: JSON.stringify({
+          general:
+            'We have blocked all requests from this device due to unusual activity. Try again later.',
+        }),
+      };
+
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.code }),

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { Formik, Form } from 'formik';
+import * as yup from 'yup';
 
 /* Redux */
 import { connect } from 'react-redux';
@@ -17,6 +19,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function Copyright() {
   return (
@@ -30,6 +34,13 @@ function Copyright() {
     </Typography>
   );
 }
+
+let LoginSchema = yup.object().shape({
+  email: yup.string().email('This field must be a valid email').required('This field is required.'),
+  password: yup
+    .string()
+    .required('This field is required.'),
+});
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -49,28 +60,25 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  formHelperText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  buttonWrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
 
-const Login = ({ loginUser, history, UI }) => {
+const Login = ({ loginUser, history }) => {
   const classes = useStyles();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({});
-
-  console.log(UI);
-
-  useEffect(() => {
-    setErrors(UI.errors || {});
-  }, [UI]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const userData = {
-      email,
-      password,
-    };
-    loginUser(userData, history);
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -81,64 +89,83 @@ const Login = ({ loginUser, history, UI }) => {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            error={!!errors.email}
-            helperText={errors.email}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            error={!!errors.password}
-            helperText={errors.password}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={handleSubmit}
-          >
-            Login
-          </Button>
-          <Grid container justify="center">
-            {/**
+        <Formik
+          initialValues={{ email: '', password: '' }}
+          validationSchema={LoginSchema}
+          onSubmit={(values, { setSubmitting, setFieldError }) => {
+            loginUser(values, history, setFieldError, setSubmitting);
+          }}
+        >
+          {({ errors, handleChange, touched, isSubmitting }) => (
+            <Form className={classes.form} noValidate>
+              <TextField
+                error={errors.email && touched.email}
+                helperText={errors.email}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                onChange={handleChange}
+                focused={true}
+              />
+              <TextField
+                error={errors.password && touched.password}
+                helperText={errors.password}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={handleChange}
+              />
+              <FormHelperText className={classes.formHelperText} error>
+                {errors.general}
+              </FormHelperText>
+              <div className={classes.buttonWrapper}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  disabled={isSubmitting}
+                  className={classes.submit}
+                >
+                  Login
+                </Button>
+                {isSubmitting && (
+                  <CircularProgress
+                    size={24}
+                    className={classes.buttonProgress}
+                  />
+                )}
+              </div>
+              <Grid container justify="center">
+                {/**
                 TODO:
                     - Add 'Forgot password' functionality
              */}
-            {/* <Grid item xs>
+                {/* <Grid item xs>
               <Link href="#" variant="body2">
                 Forgot password?
               </Link>
             </Grid> */}
-            <Grid item>
-              <Link variant="body2" component={MuiLink} to="/signup">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
+                <Grid item>
+                  <Link variant="body2" component={MuiLink} to="/signup">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
+              </Grid>
+            </Form>
+          )}
+        </Formik>
       </div>
       <Box mt={8}>
         <Copyright />
@@ -149,11 +176,6 @@ const Login = ({ loginUser, history, UI }) => {
 
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
-  UI: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  UI: state.UI,
-});
-
-export default connect(mapStateToProps, { loginUser })(Login);
+export default connect(null, { loginUser })(Login);

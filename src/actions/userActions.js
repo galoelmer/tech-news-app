@@ -4,8 +4,6 @@ import {
   UNMARK_FAVORITE_NEWS,
   ADD_TO_FAVORITES,
   REMOVE_FROM_FAVORITES,
-  SET_ERRORS,
-  CLEAR_ERRORS,
 } from '../types';
 import { getNewsData } from './newsActions';
 
@@ -26,8 +24,9 @@ export const signupUser = (newUserData, history) => (dispatch) => {
 };
 
 /* Login User action */
-export const loginUser = (userData, history) => (dispatch) => {
-  dispatch({ type: CLEAR_ERRORS });
+export const loginUser = (userData, history, setErrors, setSubmitting) => (
+  dispatch
+) => {
   axios
     .post('/api/login', userData)
     .then((res) => {
@@ -36,7 +35,11 @@ export const loginUser = (userData, history) => (dispatch) => {
       history.push('/');
     })
     .catch((err) => {
-      dispatch({ type: SET_ERRORS, payload: err.response.data });
+      // Just in case handling login errors from server
+      for (let [key, value] of Object.entries(err.response.data)) {
+        setErrors(key, value);
+      }
+      setSubmitting(false);
     });
 };
 

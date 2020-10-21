@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {Link as MuiLink} from 'react-router-dom';
+import { Link as MuiLink } from 'react-router-dom';
+import { Formik, Form } from 'formik';
+import * as yup from 'yup';
 
 /* Redux */
 import { connect } from 'react-redux';
@@ -18,6 +20,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function Copyright() {
   return (
@@ -31,6 +35,22 @@ function Copyright() {
     </Typography>
   );
 }
+
+let signupSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('This field must be a valid email')
+    .required('This field is required.'),
+  password: yup
+    .string()
+    .min(6, 'Password is too short')
+    .required('This field is required.')
+    .matches(
+      /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).+/,
+      'Must contain One Uppercase, One Lowercase and a Number'
+    )
+    .matches(/^\S+$/, 'Must not contain white-spaces'),
+});
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -50,23 +70,25 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  formHelperText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  buttonWrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -10,
+    marginLeft: -12,
+  },
 }));
 
-const SignUp = ({history, signupUser})  => {
+const SignUp = ({ history, signupUser }) => {
   const classes = useStyles();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newUserData = {
-      name,
-      email,
-      password 
-    }
-    signupUser(newUserData, history);
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -78,83 +100,100 @@ const SignUp = ({history, signupUser})  => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                autoComplete="fname"
-                name="name"
-                variant="outlined"
-                required
-                fullWidth
-                id="name"
-                label="Full name"
-                autoFocus
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={handleSubmit}
-          >
-            Sign Up
-          </Button>
-          <Grid container justify="center">
-            <Grid item>
-              <Link variant="body2" component={MuiLink} to="/login">
-                Already have an account? Login
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
+        <Formik
+          initialValues={{ email: '', password: '', name: '' }}
+          validationSchema={signupSchema}
+          onSubmit={(values, { setSubmitting, setFieldError }) => {
+            console.log(values);
+            signupUser(values, history, setFieldError, setSubmitting);
+          }}
+        >
+          {({ errors, handleChange, touched, isSubmitting }) => (
+            <Form className={classes.form} noValidate>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    autoComplete="fname"
+                    name="name"
+                    variant="outlined"
+                    fullWidth
+                    id="name"
+                    onChange={handleChange}
+                    label='Full Name'
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    error={errors.email && touched.email}
+                    helperText={errors.email}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    error={errors.password && touched.password}
+                    helperText={errors.password}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    onChange={handleChange}
+                    onKeyDown={e => e.key === " " && e.preventDefault()}
+                  />
+                </Grid>
+              </Grid>
+              <FormHelperText className={classes.formHelperText} error>
+                {errors.general}
+              </FormHelperText>
+              <div className={classes.buttonWrapper}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  disabled={isSubmitting}
+                  className={classes.submit}
+                >
+                  Signup
+                </Button>
+                {isSubmitting && (
+                  <CircularProgress
+                    size={24}
+                    className={classes.buttonProgress}
+                  />
+                )}
+              </div>
+              <Grid container justify="center">
+                <Grid item>
+                  <Link variant="body2" component={MuiLink} to="/login">
+                    Already have an account? Login
+                  </Link>
+                </Grid>
+              </Grid>
+            </Form>
+          )}
+        </Formik>
       </div>
       <Box mt={5}>
         <Copyright />
       </Box>
     </Container>
   );
-}
+};
 
 SignUp.propTypes = {
-  user: PropTypes.object.isRequired,
   signupUser: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
-
-export default connect(mapStateToProps, {signupUser})(SignUp);
+export default connect(null, { signupUser })(SignUp);

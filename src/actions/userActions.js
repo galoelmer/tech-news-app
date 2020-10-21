@@ -10,7 +10,9 @@ import { getNewsData } from './newsActions';
 import axios from 'axios';
 
 /* SignUp user action */
-export const signupUser = (newUserData, history) => (dispatch) => {
+export const signupUser = (newUserData, history, setErrors, setSubmitting) => (
+  dispatch
+) => {
   axios
     .post('/api/signup', newUserData)
     .then((res) => {
@@ -19,7 +21,11 @@ export const signupUser = (newUserData, history) => (dispatch) => {
       history.push('/');
     })
     .catch((err) => {
-      console.log(err);
+      // Just in case handling errors from server
+      for (let [key, value] of Object.entries(err.response.data)) {
+        setErrors(key, value);
+      }
+      setSubmitting(false);
     });
 };
 
@@ -35,7 +41,7 @@ export const loginUser = (userData, history, setErrors, setSubmitting) => (
       history.push('/');
     })
     .catch((err) => {
-      // Just in case handling login errors from server
+      // Just in case handling errors from server
       for (let [key, value] of Object.entries(err.response.data)) {
         setErrors(key, value);
       }

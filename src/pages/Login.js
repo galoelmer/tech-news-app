@@ -36,10 +36,11 @@ function Copyright() {
 }
 
 let LoginSchema = yup.object().shape({
-  email: yup.string().email('This field must be a valid email').required('This field is required.'),
-  password: yup
+  email: yup
     .string()
+    .email('This field must be a valid email')
     .required('This field is required.'),
+  password: yup.string().required('This field is required.'),
 });
 
 const useStyles = makeStyles((theme) => ({

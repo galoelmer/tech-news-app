@@ -16,6 +16,7 @@
     "firebase-admin": "^9.2.0",
     "formik": "^2.2.0",
     "jwt-decode": "^3.0.0",
+    "netlify-lambda": "^2.0.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-redux": "^7.2.1",
@@ -27,6 +28,7 @@
     "yup": "^0.29.3"
   },
   "scripts": {
+    "postinstall": "netlify-lambda install",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

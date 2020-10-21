@@ -4,7 +4,7 @@ var validator = require('validator');
 var chance = require('chance').Chance();
 require('firebase/auth');
 
-var serviceAccount = require('./serviceAccountKey');
+var serviceAccount = require('../../serviceAccountKey');
 var firebaseConfig = {
   apiKey: 'AIzaSyBFDLApFjnSiv7Jb7nOBDxTwJa7ntZy-_A',
   authDomain: 'tech-news-app-4e549.firebaseapp.com',

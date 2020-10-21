@@ -15,7 +15,6 @@
   "license": "MIT",
   "dependencies": {
     "node-fetch": "^2.6.1",
-    "uuid": "^8.3.0",
-    "firebase-admin": "^9.2.0"
+    "uuid": "^8.3.0"
   }
 }

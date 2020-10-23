@@ -11,6 +11,7 @@ export const getNewsData = (userId) => (dispatch) => {
       dispatch({ type: SET_NEWS_DATA, payload: res.data.data });
     })
     .catch((err) => {
+      dispatch({ type: SET_NEWS_DATA, payload: [] });
       console.log(err);
     });
 };

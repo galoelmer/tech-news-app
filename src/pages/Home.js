@@ -53,6 +53,7 @@ const NoNews = () => (
 );
 
 const Home = ({articles, loading }) => {
+
   const classes = useStyles();
   return (
     <div className={classes.root}>

@@ -17,8 +17,7 @@ export const signupUser = (newUserData, history, setErrors, setSubmitting) => (
     .post('/api/signup', newUserData)
     .then((res) => {
       setAuthenticationHeader(res.data.token);
-      dispatch(getUserData());
-      history.push('/');
+      dispatch(getUserData(history, setSubmitting));
     })
     .catch((err) => {
       // Just in case handling errors from server
@@ -37,8 +36,7 @@ export const loginUser = (userData, history, setErrors, setSubmitting) => (
     .post('/api/login', userData)
     .then((res) => {
       setAuthenticationHeader(res.data.token);
-      dispatch(getUserData());
-      history.push('/');
+      dispatch(getUserData(history, setSubmitting));
     })
     .catch((err) => {
       // Just in case handling errors from server
@@ -50,12 +48,14 @@ export const loginUser = (userData, history, setErrors, setSubmitting) => (
 };
 
 /* Get user data action */
-export const getUserData = () => (dispatch) => {
+export const getUserData = (history, setSubmitting) => (dispatch) => {
   axios
     .get('/api/get-user-data')
     .then((res) => {
       dispatch({ type: SET_USER, payload: res.data });
       dispatch(getNewsData(res.data.userId));
+      setSubmitting(false);
+      history.push('/');
     })
     .catch((err) => console.log(err));
 };

@@ -1,5 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+import AnnouncementIcon from '@material-ui/icons/Announcement';
 import Grid from '@material-ui/core/Grid';
 import Card from '../components/Card';
 
@@ -27,7 +31,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home = ({ articles, loading }) => {
+const NoNews = () => (
+  <Container maxWidth="sm">
+    <Box mt={5}>
+      <AnnouncementIcon
+        style={{
+          fontSize: 70,
+          display: 'block',
+          margin: '0 auto',
+          color: '#00bfff',
+        }}
+      />
+      <Typography component="h2" variant="h3" align="center" color="primary">
+        No News Available
+      </Typography>
+      <Typography variant="body1" align="center" color="textSecondary">
+        Try again later
+      </Typography>
+    </Box>
+  </Container>
+);
+
+const Home = ({articles, loading }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -52,6 +77,7 @@ const Home = ({ articles, loading }) => {
             </Grid>
           );
         })}
+        {!articles.length && <NoNews />}
       </Grid>
     </div>
   );

@@ -30,7 +30,7 @@ const modifyNewsData = (data) => {
     .map((item) => {
       return {
         sourceName: item.source.name,
-        title: item.title,
+        title: item.title.slice(0, item.title.lastIndexOf('-')).trim(),
         url: item.url,
         urlToImage: item.urlToImage,
         publishedAt: item.publishedAt,

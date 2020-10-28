@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    // flexGrow: 1,
     margin: '30px',
   },
   card: {
@@ -69,6 +69,7 @@ const Home = ({articles, loading }) => {
                   newsUrl={item.url}
                   imageUrl={item.urlToImage}
                   datePublished={item.publishedAt}
+                  sourceName={item.sourceName}
                   imageSource={item.imageSource}
                   markFavorite={item.favorite}
                 />

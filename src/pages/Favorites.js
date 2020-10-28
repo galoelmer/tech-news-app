@@ -32,6 +32,7 @@ const Favorites = ({ favorites = [] }) => {
                   imageUrl={item.urlToImage}
                   datePublished={item.publishedAt}
                   imageSource={item.imageSource}
+                  sourceName={item.sourceName}
                   markFavorite="remove-icon"
                 />
               </Grid>

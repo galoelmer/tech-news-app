@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { formatDistanceStrict } from 'date-fns';
 import { useHistory } from 'react-router-dom';
+import randomColor from 'randomcolor';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
@@ -43,12 +44,13 @@ const useStyles = makeStyles((theme) => ({
     height: 0,
     paddingTop: '56.25%', // 16:9
   },
-  avatar: {
-    fontSize: '1.2em',
+  avatar: () => ({
+    backgroundColor: randomColor(),
+    fontSize: '1em',
     width: theme.spacing(7),
     height: theme.spacing(7),
     border: '1px solid #ccc',
-  },
+  }),
   description: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -63,6 +65,7 @@ const NewsCard = ({
   newsUrl,
   imageUrl,
   imageSource,
+  sourceName,
   datePublished,
   markFavorite = false,
   markFavoriteNews,
@@ -108,6 +111,7 @@ const NewsCard = ({
         url: newsUrl,
         urlToImage: imageUrl,
         imageSource,
+        sourceName,
         publishedAt: datePublished,
       };
 
@@ -160,7 +164,7 @@ const NewsCard = ({
                   alt="news"
                   src={imageSource}
                 >
-                  Tech News
+                  {sourceName}
                 </Avatar>
               ) : (
                 <Skeleton
@@ -173,7 +177,7 @@ const NewsCard = ({
             }
             title={
               title ? (
-                title.slice(0, 75) + '...'
+                title
               ) : (
                 <Skeleton height={10} width="90%" style={{ marginBottom: 6 }} />
               )

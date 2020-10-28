@@ -16,6 +16,13 @@ const db = admin.firestore();
 const { REACT_APP_NEWS_API_KEY: API_KEY } = process.env;
 const URL = `http://newsapi.org/v2/top-headlines?country=us&category=technology&apiKey=${API_KEY}`;
 
+// Add source logo url to articles
+const addLogoUrl = (sourceId) => {
+  return sourceId
+    ? `https://firebasestorage.googleapis.com/v0/b/tech-news-app-4e549.appspot.com/o/logos%2F${sourceId}.png?alt=media`
+    : '#';
+};
+
 const modifyNewsData = (data) => {
   return data.articles
     .filter((item) => {
@@ -23,17 +30,20 @@ const modifyNewsData = (data) => {
         item.title &&
         item.url &&
         item.urlToImage &&
-        item.publishedAt
+        item.publishedAt &&
+        item.description
         ? true
         : false;
     })
     .map((item) => {
       return {
+        description: item.description,
+        imageSource: addLogoUrl(item.source.id), // Add logo url if exist in db images store
+        publishedAt: item.publishedAt,
         sourceName: item.source.name,
         title: item.title.slice(0, item.title.lastIndexOf('-')).trim(),
         url: item.url,
         urlToImage: item.urlToImage,
-        publishedAt: item.publishedAt,
       };
     });
 };
@@ -80,32 +90,32 @@ exports.handler = async function (event) {
 
     let listOfArticlesTitles = [];
     let newDataArticles = [];
-
     // Get all current articles from firestore
     const articlesRef = await db.collection('newsArticles').get();
-    // Store all current articles' titles to array
+    // Add all current articles' titles to array
     articlesRef.forEach((doc) => {
       listOfArticlesTitles.push(doc.data().title);
     });
-
+    
     // Filter repeated News articles from API provider
     filterNewsData.forEach((item) => {
       if (!listOfArticlesTitles.includes(item.title)) {
         newDataArticles.push(item);
       }
     });
-
+    
+    
     // Add news articles to firestore
     if (newDataArticles.length) {
       const batch = db.batch();
-      const docRef = db.collection('newsArticles').doc();
       newDataArticles.forEach((doc) => {
+        const docRef = db.collection('newsArticles').doc();
         console.log('added: ', doc);
         batch.set(docRef, doc);
       });
       batch.commit();
     }
-
+    
     return {
       statusCode: response.status,
       body: newDataArticles.length

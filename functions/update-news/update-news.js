@@ -18,7 +18,15 @@ const URL = `http://newsapi.org/v2/top-headlines?country=us&category=technology&
 
 // Add source logo url to articles
 const addLogoUrl = (sourceId) => {
-  return sourceId
+  const sourceIds = [
+    'engadget',
+    'techcrunch',
+    'techradar',
+    'the-next-web',
+    'the-verge',
+    'wired',
+  ];
+  return sourceId && sourceIds.includes(sourceId)
     ? `https://firebasestorage.googleapis.com/v0/b/tech-news-app-4e549.appspot.com/o/logos%2F${sourceId}.png?alt=media`
     : '#';
 };
@@ -104,13 +112,11 @@ exports.handler = async function (event) {
       }
     });
     
-    
     // Add news articles to firestore
     if (newDataArticles.length) {
       const batch = db.batch();
       newDataArticles.forEach((doc) => {
         const docRef = db.collection('newsArticles').doc();
-        console.log('added: ', doc);
         batch.set(docRef, doc);
       });
       batch.commit();

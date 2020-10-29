@@ -45,11 +45,13 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '56.25%', // 16:9
   },
   avatar: () => ({
-    backgroundColor: randomColor(),
+    backgroundColor: randomColor({ luminosity: 'dark', hue: 'random' }),
     fontSize: '1em',
     width: theme.spacing(7),
     height: theme.spacing(7),
     border: '1px solid #ccc',
+    textAlign: 'center',
+    wordBreak: 'break-all',
   }),
   description: {
     overflow: 'hidden',

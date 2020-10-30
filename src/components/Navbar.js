@@ -48,7 +48,7 @@ const Navbar = ({ authenticated, userName, logoutUser }) => {
   };
 
   return (
-    <div className={classes.root}>
+    <div id="back-to-top-anchor" className={classes.root}>
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" className={classes.title}>

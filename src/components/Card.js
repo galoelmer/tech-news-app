@@ -80,6 +80,7 @@ const NewsCard = ({
   const [currentImage, setCurrentImage] = useState(null);
   const [loadingImage, setLoadingImage] = useState(true);
   const history = useHistory();
+  const [loadingFavoriteButton, setLoadingFavoriteButton] = useState(false);
   /**
       TODO:
       - Re-work on how to handle favorites news
@@ -121,6 +122,7 @@ const NewsCard = ({
         ? removeFromFavorites(id)
         : addToUserFavorites(article);
 
+      setLoadingFavoriteButton(true);
       markFavoriteNews(id);
 
       const data = {
@@ -139,6 +141,7 @@ const NewsCard = ({
       })
         .then((res) => {
           console.log(res.ok);
+          setLoadingFavoriteButton(false);
         })
         .catch((err) => {
           console.log(err);
@@ -251,7 +254,7 @@ const NewsCard = ({
           <IconButton
             aria-label="add to favorites"
             onClick={handleFavorite}
-            disabled={!id}
+            disabled={loadingFavoriteButton}
           >
             {markFavorite === 'remove-icon' ? (
               <DeleteIcon htmlColor="#ed6999" />
@@ -271,6 +274,7 @@ const NewsCard = ({
 const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
   userId: state.user.id,
+  loadingFavorites: state.newsData.loadingFavorites,
 });
 
 export default connect(mapStateToProps, {

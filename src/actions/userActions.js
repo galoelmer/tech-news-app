@@ -70,8 +70,10 @@ export const getUserData = (history, setSubmitting) => (dispatch) => {
     .then((res) => {
       dispatch({ type: SET_USER, payload: res.data });
       dispatch(getNewsData(res.data.userId));
-      setSubmitting(false);
-      history.push('/');
+      if (history || setSubmitting) {
+        setSubmitting(false);
+        history.push('/');
+      }
     })
     .catch((err) => console.log(err));
 };

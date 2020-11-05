@@ -1,16 +1,7 @@
 const firebase = require('firebase/app');
+const validator = require('validator');
+const firebaseConfig = require('../../firebaseConfig');
 require('firebase/auth');
-var validator = require('validator');
-
-var firebaseConfig = {
-  apiKey: 'AIzaSyBFDLApFjnSiv7Jb7nOBDxTwJa7ntZy-_A',
-  authDomain: 'tech-news-app-4e549.firebaseapp.com',
-  databaseURL: 'https://tech-news-app-4e549.firebaseio.com',
-  projectId: 'tech-news-app-4e549',
-  storageBucket: 'tech-news-app-4e549.appspot.com',
-  messagingSenderId: '762605078939',
-  appId: '1:762605078939:web:48a9ef048a78eddcd6793e',
-};
 
 if (!firebase.apps.length) {
   // Initialize Firebase
@@ -39,8 +30,6 @@ exports.handler = async (event) => {
       statusCode: 400,
       body: 'Must POST to this function',
     };
-
-  console.log(JSON.parse(event.body));
 
   // Server input validation
   const { valid, errors } = validateLoginData(JSON.parse(event.body));

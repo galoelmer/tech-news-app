@@ -117,7 +117,6 @@ const SignUp = ({ history, signupUser }) => {
           initialValues={{ email: '', password: '', name: '' }}
           validationSchema={signupSchema}
           onSubmit={(values, { setSubmitting, setFieldError }) => {
-            console.log(values);
             signupUser(values, history, setFieldError, setSubmitting);
           }}
         >

@@ -1,19 +1,11 @@
 const firebase = require('firebase/app');
 const admin = require('firebase-admin');
-var validator = require('validator');
-var chance = require('chance').Chance();
+const validator = require('validator');
+const chance = require('chance').Chance();
 require('firebase/auth');
 
-var serviceAccount = require('../../serviceAccountKey');
-var firebaseConfig = {
-  apiKey: 'AIzaSyBFDLApFjnSiv7Jb7nOBDxTwJa7ntZy-_A',
-  authDomain: 'tech-news-app-4e549.firebaseapp.com',
-  databaseURL: 'https://tech-news-app-4e549.firebaseio.com',
-  projectId: 'tech-news-app-4e549',
-  storageBucket: 'tech-news-app-4e549.appspot.com',
-  messagingSenderId: '762605078939',
-  appId: '1:762605078939:web:48a9ef048a78eddcd6793e',
-};
+const firebaseConfig = require('../../firebaseConfig'); 
+const serviceAccount = require('../../serviceAccountKey');
 
 if (!firebase.apps.length) {
   // Initialize Firebase
@@ -23,7 +15,7 @@ if (!firebase.apps.length) {
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://tech-news-app-4e549.firebaseio.com',
+    databaseURL: `https://${process.env.REACT_APP_FIREBASE_PROJECT_ID}.firebaseio.com`,
   });
 }
 
@@ -65,7 +57,6 @@ exports.handler = async (event, context, callback) => {
   const { valid, errors, username } = validateSignUpData(
     JSON.parse(event.body)
   );
-  console.log(username);
   if (!valid)
     return {
       statusCode: 400,

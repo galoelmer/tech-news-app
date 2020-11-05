@@ -2,12 +2,12 @@ const fetch = require('node-fetch');
 const admin = require('firebase-admin');
 const { Base64 } = require('js-base64');
 
-var serviceAccount = require('../../serviceAccountKey');
+const serviceAccount = require('../../serviceAccountKey');
 
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://tech-news-app-4e549.firebaseio.com',
+    databaseURL: `https://${process.env.REACT_APP_FIREBASE_PROJECT_ID}.firebaseio.com`,
   });
 }
 
@@ -27,7 +27,7 @@ const addLogoUrl = (sourceId) => {
     'wired',
   ];
   return sourceId && sourceIds.includes(sourceId)
-    ? `https://firebasestorage.googleapis.com/v0/b/tech-news-app-4e549.appspot.com/o/logos%2F${sourceId}.png?alt=media`
+    ? `https://firebasestorage.googleapis.com/v0/b/${process.env.REACT_APP_FIREBASE_PROJECT_ID}.appspot.com/o/logos%2F${sourceId}.png?alt=media`
     : '#';
 };
 
@@ -99,9 +99,10 @@ exports.handler = async function (event) {
     let listOfArticlesTitles = [];
     let newDataArticles = [];
     // Get all current articles from firestore
-    const articlesRef = await db.collection('newsArticles').get();
+    const articlesRef = db.collection('newsArticles');
+    const snapshot = await articlesRef.get();
     // Add all current articles' titles to array
-    articlesRef.forEach((doc) => {
+    snapshot.forEach((doc) => {
       listOfArticlesTitles.push(doc.data().title);
     });
     

@@ -11,25 +11,9 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-// Check if user added article to favorites
-const markFavorites = async (data, userId) => {
-  const userFavoritesList = await db
-    .collection('favorites')
-    .where('users', 'array-contains', userId)
-    .get();
-
-  return data.map((article) => {
-    userFavoritesList.forEach((doc) => {
-      if (doc.id === article.id) {
-        article.favorite = true;
-      }
-    });
-    return article;
-  });
-};
-
 exports.handler = async function (event) {
-  const userId = event.queryStringParameters.userId;
+  const offset = event.queryStringParameters.offset;
+
   if (event.httpMethod !== 'GET')
     return {
       statusCode: 400,
@@ -37,23 +21,27 @@ exports.handler = async function (event) {
     };
 
   try {
-    let data = [];
+    const data = [];
     // Get News articles from firestore
-    const newsArticlesRef = await db.collection('newsArticles').orderBy('publishedAt', 'desc').get();
-    newsArticlesRef.forEach((doc) => {
-      let item = doc.data();
-      item.id = doc.id;
-      data.push(item);
-    });
+    const newsArticlesRef = db
+      .collection('newsArticles')
+      .orderBy('publishedAt', 'desc')
+      .limit(12)
+      .offset(parseInt(offset) || 0);
 
-    // Mark users favorite articles
-    if (userId) {
-      await markFavorites(data, userId);
+    const snapshot = await newsArticlesRef.get();
+
+    if (!snapshot.empty) {
+      snapshot.docs.forEach((doc) => {
+        let item = doc.data();
+        item.id = doc.id;
+        data.push(item);
+      });
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ data }),
+      body: JSON.stringify({ data, maxLimit: snapshot.size < 12 }),
     };
   } catch (error) {
     console.log(error); // output to netlify function log

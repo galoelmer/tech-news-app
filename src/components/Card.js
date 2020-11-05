@@ -118,12 +118,14 @@ const NewsCard = ({
         publishedAt: datePublished,
       };
 
-      isFavorite || markFavorite === 'remove-icon'
-        ? removeFromFavorites(id)
-        : addToUserFavorites(article);
-
       setLoadingFavoriteButton(true);
-      markFavoriteNews(id);
+      
+      if (isFavorite || markFavorite === 'remove-icon') {
+        removeFromFavorites(id);
+      } else {
+        addToUserFavorites(article);
+        markFavoriteNews(id);
+      }
 
       const data = {
         articleId: id,
@@ -139,8 +141,7 @@ const NewsCard = ({
         method: 'POST',
         body: JSON.stringify(data),
       })
-        .then((res) => {
-          console.log(res.ok);
+        .then(() => {
           setLoadingFavoriteButton(false);
         })
         .catch((err) => {

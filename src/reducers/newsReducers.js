@@ -2,12 +2,14 @@ import {
   SET_NEWS_DATA,
   MARK_FAVORITE_NEWS,
   UNMARK_FAVORITE_NEWS,
+  UNMARK_SINGLE_FAVORITE_NEWS,
   LOADING_DATA,
 } from '../types';
 
 const initialState = {
   articles: [],
   loading: false,
+  maxLimit: false,
 };
 
 export default function (state = initialState, action) {
@@ -15,8 +17,9 @@ export default function (state = initialState, action) {
     case SET_NEWS_DATA:
       return {
         ...state,
-        articles: action.payload,
+        articles: [...state.articles, ...action.payload.data],
         loading: false,
+        maxLimit: action.payload.maxLimit,
       };
 
     case MARK_FAVORITE_NEWS:
@@ -33,6 +36,14 @@ export default function (state = initialState, action) {
         }),
       });
 
+    case UNMARK_SINGLE_FAVORITE_NEWS: {
+      return Object.assign({}, state, {
+        articles: state.articles.map((article) => {
+          if (article.id === action.payload) delete article.favorite;
+          return article;
+        }),
+      });
+    }
     case LOADING_DATA:
       return {
         ...state,
@@ -47,7 +58,7 @@ export default function (state = initialState, action) {
 const markFavoriteNews = (id, articles) => {
   return articles.map((article) => {
     if (article.id !== id) return article;
-    article.favorite = article.favorite ? !article.favorite : true;
+    article.favorite = true;
     return article;
   });
 };

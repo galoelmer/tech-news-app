@@ -1,11 +1,11 @@
 const admin = require('firebase-admin');
 
-var serviceAccount = require('../../serviceAccountKey');
+const serviceAccount = require('../../serviceAccountKey');
 
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://tech-news-app-4e549.firebaseio.com',
+    databaseURL: `https://${process.env.REACT_APP_FIREBASE_PROJECT_ID}.firebaseio.com`,
   });
 }
 const db = admin.firestore();

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link as MuiLink } from 'react-router-dom';
+import { Link as MuiLink, useHistory } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
 
@@ -91,8 +91,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignUp = ({ history, signupUser }) => {
+const SignUp = ({ signupUser }) => {
   const classes = useStyles();
+  const history = useHistory();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {

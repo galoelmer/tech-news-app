@@ -54,9 +54,15 @@ function App() {
           <Navbar />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/favorites" component={Favorites} />
-            <Route path="/signup" component={Signup} />
-            <Route path="/login" component={Login} />
+            <PrivateRoute exact path="/favorites">
+              <Favorites />
+            </PrivateRoute>
+            <PrivateRoute exact path="/signup">
+              <Signup />
+            </PrivateRoute>
+            <PrivateRoute exact path="/login">
+              <Login />
+            </PrivateRoute>
             <Route path="*">
               <Redirect to="/" />
             </Route>
@@ -64,6 +70,22 @@ function App() {
         </Router>
       </Provider>
     </React.Fragment>
+  );
+}
+
+function PrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) => {
+        const path = location.pathname;
+        if (store.getState().user.authenticated) {
+          return path === '/favorites' ? children : <Redirect to="/" />;
+        } else {
+          return path !== '/favorites' ? children : <Redirect to="/login" />;
+        }
+      }}
+    />
   );
 }
 

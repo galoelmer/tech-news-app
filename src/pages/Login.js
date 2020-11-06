@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
@@ -82,8 +83,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = ({ loginUser, history }) => {
+const Login = ({ loginUser }) => {
   const classes = useStyles();
+  const history = useHistory();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {

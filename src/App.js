@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 import Navbar from './components/Navbar';
@@ -8,15 +13,14 @@ import Navbar from './components/Navbar';
 import { Provider } from 'react-redux';
 import store from './store';
 import { SET_AUTHENTICATED } from './types';
-import {getUserData, logoutUser} from './actions/userActions';
-import {getNewsData} from './actions/newsActions';
+import { getUserData, logoutUser } from './actions/userActions';
+import { getNewsData } from './actions/newsActions';
 
 /* Pages */
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Favorites from './pages/Favorites';
-
 
 /* Decode authentication Token
 -------------------------------------------------- */
@@ -53,6 +57,9 @@ function App() {
             <Route path="/favorites" component={Favorites} />
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
+            <Route path="*">
+              <Redirect to="/" />
+            </Route>
           </Switch>
         </Router>
       </Provider>

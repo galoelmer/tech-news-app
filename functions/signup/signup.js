@@ -42,7 +42,7 @@ function validateSignUpData({ name, email, password }) {
   return {
     errors,
     valid: Object.keys(errors).length === 0 ? true : false,
-    username: name.trim() === '' ? chance.name() : name,
+    username: name.trim() ? name.trim() : chance.name(),
   };
 }
 
@@ -53,7 +53,7 @@ exports.handler = async (event, context, callback) => {
       body: 'Must POST to this function',
     };
 
-  const randomNameCreated = event.body.name.trim() === '';
+  const randomNameCreated = JSON.parse(event.body).name.trim() ? false : true;
 
   // Server input validation
   const { valid, errors, username } = validateSignUpData(

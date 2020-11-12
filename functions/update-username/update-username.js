@@ -11,13 +11,15 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 exports.handler = async (event, context, callback) => {
-  if (event.httpMethod !== 'GET')
+  if (event.httpMethod !== 'POST')
     return {
       statusCode: 400,
-      body: 'Must be a GET request',
+      body: 'Must be a POST request',
     };
 
+  const { username } = JSON.parse(event.body);
   let idToken;
+
   if (
     event.headers.authorization &&
     event.headers.authorization.startsWith('Bearer ')
@@ -35,41 +37,17 @@ exports.handler = async (event, context, callback) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    // Get user data
     const userRef = db.collection('users').doc(decodedToken.uid);
-    const doc = await userRef.get();
-    const userData = doc.data();
-
-    if (!doc.exists) {
-      return callback(null, {
-        statusCode: 500,
-        body: JSON.stringify({
-          general: 'Something went wrong, please try again',
-        }),
-      });
-    }
-
-    // Get user favorites
-    let favorites = [];
-    const snapshot = await db
-      .collection('favorites')
-      .where('users', 'array-contains', decodedToken.uid)
-      .get();
-    snapshot.forEach((doc) => {
-      const newsArticle = doc.data();
-      delete newsArticle.users;
-      favorites.push(newsArticle);
+    const res = await userRef.update({
+      name: username,
+      randomNameCreated: false,
     });
 
     return callback(null, {
       statusCode: 200,
-      body: JSON.stringify({
-        userName: userData.name,
-        userId: doc.id,
-        favorites,
-        randomNameCreated: userData.randomNameCreated,
-      }),
+      body: JSON.stringify({ res }),
     });
+    
   } catch (error) {
     return callback(null, {
       statusCode: 500,

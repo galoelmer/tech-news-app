@@ -5,6 +5,7 @@ import {
   UNMARK_SINGLE_FAVORITE_NEWS,
   ADD_TO_FAVORITES,
   REMOVE_FROM_FAVORITES,
+  UPDATE_USERNAME,
 } from '../types';
 import { getNewsData } from './newsActions';
 import axios from 'axios';
@@ -60,6 +61,18 @@ export const getUserData = (history, setSubmitting) => (dispatch) => {
       }
     })
     .catch((err) => console.log(err));
+};
+
+/* Update Username */
+export const updateUsername = (username) => (dispatch) => {
+  axios
+    .post('/api/update-username', { username })
+    .then(() => {
+      dispatch({type: UPDATE_USERNAME, payload: username })
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 /* Log out user action */

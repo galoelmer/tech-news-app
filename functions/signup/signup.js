@@ -4,7 +4,7 @@ const validator = require('validator');
 const chance = require('chance').Chance();
 require('firebase/auth');
 
-const firebaseConfig = require('../../firebaseConfig'); 
+const firebaseConfig = require('../../firebaseConfig');
 const serviceAccount = require('../../serviceAccountKey');
 
 if (!firebase.apps.length) {
@@ -53,6 +53,8 @@ exports.handler = async (event, context, callback) => {
       body: 'Must POST to this function',
     };
 
+  const randomNameCreated = event.body.name.trim() === '';
+
   // Server input validation
   const { valid, errors, username } = validateSignUpData(
     JSON.parse(event.body)
@@ -77,6 +79,7 @@ exports.handler = async (event, context, callback) => {
       name: username,
       email,
       createdAt: new Date().toISOString(),
+      randomNameCreated,
     };
 
     await db.collection('users').doc(userId).set(userCredentials);

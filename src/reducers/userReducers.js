@@ -4,12 +4,14 @@ import {
   SET_USER,
   ADD_TO_FAVORITES,
   REMOVE_FROM_FAVORITES,
+  UPDATE_USERNAME,
 } from '../types';
 
 const initialState = {
   authenticated: false,
   name: '',
   favorites: [],
+  randomNameCreated: false,
 };
 
 export default function (state = initialState, action) {
@@ -28,6 +30,14 @@ export default function (state = initialState, action) {
         name: action.payload.userName,
         id: action.payload.userId,
         favorites: action.payload.favorites,
+        randomNameCreated: action.payload.randomNameCreated,
+      };
+
+    case UPDATE_USERNAME:
+      return {
+        ...state,
+        name: action.payload,
+        randomNameCreated: false,
       };
 
     case ADD_TO_FAVORITES:

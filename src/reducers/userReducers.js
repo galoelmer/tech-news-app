@@ -5,6 +5,7 @@ import {
   ADD_TO_FAVORITES,
   REMOVE_FROM_FAVORITES,
   UPDATE_USERNAME,
+  LOADING_USER_DATA,
 } from '../types';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   name: '',
   favorites: [],
   randomNameCreated: false,
+  loading: false,
 };
 
 export default function (state = initialState, action) {
@@ -38,6 +40,7 @@ export default function (state = initialState, action) {
         ...state,
         name: action.payload,
         randomNameCreated: false,
+        loading: false,
       };
 
     case ADD_TO_FAVORITES:
@@ -50,6 +53,8 @@ export default function (state = initialState, action) {
           (item) => item.articleId !== action.payload
         ),
       };
+    case LOADING_USER_DATA:
+      return { ...state, loading: true };
 
     default:
       return state;

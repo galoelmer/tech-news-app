@@ -6,6 +6,7 @@ import {
   ADD_TO_FAVORITES,
   REMOVE_FROM_FAVORITES,
   UPDATE_USERNAME,
+  LOADING_USER_DATA,
 } from '../types';
 import { getNewsData } from './newsActions';
 import axios from 'axios';
@@ -64,11 +65,13 @@ export const getUserData = (history, setSubmitting) => (dispatch) => {
 };
 
 /* Update Username */
-export const updateUsername = (username) => (dispatch) => {
+export const updateUsername = (username, closeModalForm) => (dispatch) => {
+  dispatch({ type: LOADING_USER_DATA });
   axios
     .post('/api/update-username', { username })
     .then(() => {
-      dispatch({type: UPDATE_USERNAME, payload: username })
+      dispatch({ type: UPDATE_USERNAME, payload: username });
+      closeModalForm();
     })
     .catch((err) => {
       console.log(err);

@@ -1,0 +1,19 @@
+{
+  "name": "remove-old-news",
+  "version": "1.0.0",
+  "description": "netlify functions",
+  "main": "remove-old-news.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "netlify",
+    "serverless",
+    "js"
+  ],
+  "author": "Elmer C.",
+  "license": "MIT",
+  "dependencies": {
+    "js-base64": "^3.5.2"
+  }
+}

@@ -64,7 +64,6 @@ export default function EditNameForm({
         <TextField
           error={error}
           helperText={error && 'Username should not be empty'}
-          autoFocus
           margin="dense"
           id="name"
           label="Username"

@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 400,
     maxHeight: 500,
     minHeight: 500,
+    margin: '0 auto',
+    [theme.breakpoints.down('xs')]: {
+      minWidth: 320
+    }
   },
   media: {
     height: 0,

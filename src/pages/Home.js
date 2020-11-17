@@ -25,7 +25,7 @@ import { getNewsData } from '../actions/newsActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '30px',
+    margin: 20,
   },
   card: {
     minHeight: 500,

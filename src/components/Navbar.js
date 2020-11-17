@@ -20,10 +20,22 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
 import Box from '@material-ui/core/Box';
 import EditNameForm from './EditNameForm';
+import MenuIcon from '@material-ui/icons/Menu';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Divider from '@material-ui/core/Divider';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import LockIcon from '@material-ui/icons/Lock';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import CollectionsBookmarkIcon from '@material-ui/icons/CollectionsBookmark';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    minWidth: 350,
   },
   menuButton: {
     color: '#ae4e59',
@@ -39,6 +51,31 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  burgerButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: 'auto',
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-start',
+  },
+  navLinks: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
 }));
 
 const Navbar = ({
@@ -52,10 +89,21 @@ const Navbar = ({
   let history = useHistory();
   const [showForm, setShowForm] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleLogOut = () => {
     logoutUser();
     history.push('/');
+  };
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+    setDrawerOpen(open);
   };
 
   return (
@@ -66,7 +114,7 @@ const Navbar = ({
             <Link to="/">Tech News</Link>
           </Typography>
           {authenticated ? (
-            <>
+            <div className={classes.navLinks}>
               <Button
                 variant="outlined"
                 color="inherit"
@@ -108,9 +156,9 @@ const Navbar = ({
                   </IconButton>
                 </Tippy>
               </Box>
-            </>
+            </div>
           ) : (
-            <Box>
+            <Box className={classes.navLinks}>
               <Button color="inherit" component={Link} to="/login">
                 Login
               </Button>
@@ -119,6 +167,15 @@ const Navbar = ({
               </Button>
             </Box>
           )}
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={() => setDrawerOpen(!drawerOpen)}
+            className={classes.burgerButton}
+          >
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <EditNameForm
@@ -126,6 +183,54 @@ const Navbar = ({
         handleShowForm={setShowForm}
         updateUsername={updateUsername}
       />
+      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
+        <div
+          className={classes.list}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={() => setDrawerOpen(false)}>
+              <ChevronRightIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+            {authenticated ? (
+              <>
+                <ListItem button component={Link} to="/favorites">
+                  <ListItemIcon>
+                    <CollectionsBookmarkIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Favorites" />
+                </ListItem>
+                <ListItem button onClick={handleLogOut}>
+                  <ListItemIcon>
+                    <ExitToAppIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Logout" />
+                </ListItem>
+              </>
+            ) : (
+              <>
+                <ListItem button component={Link} to="/login">
+                  <ListItemIcon>
+                    <LockIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Login" />
+                </ListItem>
+                <ListItem button component={Link} to="/signup">
+                  <ListItemIcon>
+                    <AssignmentIndIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Signup" />
+                </ListItem>
+              </>
+            )}
+          </List>
+        </div>
+      </Drawer>
     </div>
   );
 };

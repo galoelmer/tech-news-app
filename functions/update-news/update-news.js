@@ -99,20 +99,24 @@ exports.handler = async function (event) {
     let listOfArticlesTitles = [];
     let newDataArticles = [];
     // Get all current articles from firestore
-    const articlesRef = db.collection('newsArticles');
+    const articlesRef = db
+      .collection('newsArticles')
+      .orderBy('publishedAt', 'desc')
+      .limit(20);
+
     const snapshot = await articlesRef.get();
     // Add all current articles' titles to array
     snapshot.forEach((doc) => {
       listOfArticlesTitles.push(doc.data().title);
     });
-    
+
     // Filter repeated News articles from API provider
     filterNewsData.forEach((item) => {
       if (!listOfArticlesTitles.includes(item.title)) {
         newDataArticles.push(item);
       }
     });
-    
+
     // Add news articles to firestore
     if (newDataArticles.length) {
       const batch = db.batch();
@@ -122,7 +126,7 @@ exports.handler = async function (event) {
       });
       batch.commit();
     }
-    
+
     return {
       statusCode: response.status,
       body: newDataArticles.length

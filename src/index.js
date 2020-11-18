@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './index.css';
 import App from './App';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { makeServer } from './server';
 
-import {
-  createMuiTheme,
-  ThemeProvider,
-} from '@material-ui/core/styles';
+if (process.env.REACT_APP_ENV === 'local-development') {
+  makeServer({ environment: 'development' });
+}
 
 const theme = createMuiTheme({
   palette: {
@@ -26,7 +27,6 @@ const theme = createMuiTheme({
   },
 });
 
-
 ReactDOM.render(
   <React.StrictMode>
     <CssBaseline />
@@ -36,4 +36,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-

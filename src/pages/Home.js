@@ -12,12 +12,6 @@ import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
-/**
-    TODO:
-    - Remove test data after development process
-*/
-/* TEST DATA */
-// import data from '../data';
 
 /* Redux */
 import { connect } from 'react-redux';
@@ -112,7 +106,7 @@ const Home = ({ articles, loading, maxLimit, getNewsData }) => {
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        {(loading ? Array.from(new Array(12)) : articles).map((item, index) => {
+        {(loading ? [...articles, ...Array.from(new Array(12))] : articles).map((item, index) => {
           return (
             <Grid key={index} item xs={12} sm={6} md={4} lg={3} xl={2}>
               {item ? (

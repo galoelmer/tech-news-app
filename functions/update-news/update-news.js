@@ -130,7 +130,7 @@ exports.handler = async function (event) {
     return {
       statusCode: response.status,
       body: newDataArticles.length
-        ? 'Successful DB Update'
+        ? `Successful DB Update with ${newDataArticles.length} articles`
         : 'DB update not required',
     };
   } catch (error) {

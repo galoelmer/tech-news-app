@@ -30,6 +30,7 @@
   },
   "scripts": {
     "postinstall": "netlify-lambda install",
+    "dev": "cross-env REACT_APP_ENV=local-development npm start",
     "start": "react-scripts start",
     "build": "rimraf build && react-scripts build",
     "test": "react-scripts test",
@@ -51,6 +52,8 @@
     ]
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
+    "miragejs": "^0.1.41",
     "rimraf": "^3.0.2"
   }
 }

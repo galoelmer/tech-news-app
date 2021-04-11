@@ -1,36 +1,36 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Link, useHistory } from 'react-router-dom';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/light-border.css';
-import 'tippy.js/animations/scale-extreme.css';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { Link, useHistory } from "react-router-dom";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import "tippy.js/themes/light-border.css";
+import "tippy.js/animations/scale-extreme.css";
 
 /* Redux */
-import { connect } from 'react-redux';
-import { logoutUser, updateUsername } from '../actions/userActions';
+import { connect } from "react-redux";
+import { logoutUser, updateUsername } from "../actions/userActions";
 
 /* Material UI Components */
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import IconButton from '@material-ui/core/IconButton';
-import Box from '@material-ui/core/Box';
-import EditNameForm from './EditNameForm';
-import MenuIcon from '@material-ui/icons/Menu';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Divider from '@material-ui/core/Divider';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import LockIcon from '@material-ui/icons/Lock';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import CollectionsBookmarkIcon from '@material-ui/icons/CollectionsBookmark';
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import IconButton from "@material-ui/core/IconButton";
+import Box from "@material-ui/core/Box";
+import EditNameForm from "./EditNameForm";
+import MenuIcon from "@material-ui/icons/Menu";
+import Drawer from "@material-ui/core/Drawer";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Divider from "@material-ui/core/Divider";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import LockIcon from "@material-ui/icons/Lock";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+import CollectionsBookmarkIcon from "@material-ui/icons/CollectionsBookmark";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,44 +38,49 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 350,
   },
   menuButton: {
-    color: '#ae4e59',
+    color: "#ae4e59",
   },
   title: {
     // flexGrow: 1,
-    '& a': {
-      textDecoration: 'none',
-      color: '#fff',
+    "& a": {
+      textDecoration: "none",
+      color: "#fff",
     },
   },
   toolbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
   },
   burgerButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
     },
   },
   list: {
     width: 250,
   },
   fullList: {
-    width: 'auto',
+    width: "auto",
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
   },
-  navLinks: {
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
+  navLinks: props => ({
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
     },
-  },
+    display: "flex",
+    flex: props.authenticated ? "1" : "0",
+    "& a": {
+      margin: "0 auto",
+    },
+  }),
 }));
 
 const Navbar = ({
@@ -85,7 +90,7 @@ const Navbar = ({
   updateUsername,
   randomNameCreated,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles({ authenticated });
   let history = useHistory();
   const [showForm, setShowForm] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -93,13 +98,13 @@ const Navbar = ({
 
   const handleLogOut = () => {
     logoutUser();
-    history.push('/');
+    history.push("/");
   };
 
   const toggleDrawer = (open) => (event) => {
     if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
     ) {
       return;
     }
@@ -139,7 +144,7 @@ const Navbar = ({
                 >
                   <Button
                     onClick={() => setShowForm(true)}
-                    style={{ textTransform: 'capitalize', color: 'white' }}
+                    style={{ textTransform: "capitalize", color: "white" }}
                   >
                     Hello, {userName}
                   </Button>

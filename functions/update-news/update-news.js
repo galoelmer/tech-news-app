@@ -25,6 +25,10 @@ const addLogoUrl = (sourceId) => {
     'the-next-web',
     'the-verge',
     'wired',
+    'google-news',
+    '9to5Mac',
+    'ars-technica',
+    'polygon',
   ];
   return sourceId && sourceIds.includes(sourceId)
     ? `https://firebasestorage.googleapis.com/v0/b/${process.env.REACT_APP_FIREBASE_PROJECT_ID}.appspot.com/o/logos%2F${sourceId}.png?alt=media`

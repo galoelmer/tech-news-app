@@ -10,6 +10,7 @@ const initialState = {
   articles: [],
   loading: false,
   maxLimit: false,
+  offset: 0,
 };
 
 export default function (state = initialState, action) {
@@ -20,6 +21,7 @@ export default function (state = initialState, action) {
         articles: [...state.articles, ...action.payload.data],
         loading: false,
         maxLimit: action.payload.maxLimit,
+        offset: state.offset + 12,
       };
 
     case MARK_FAVORITE_NEWS:

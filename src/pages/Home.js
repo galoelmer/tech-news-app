@@ -93,13 +93,10 @@ ScrollTop.propTypes = {
   window: PropTypes.func,
 };
 
-const Home = ({ articles, loading, maxLimit, getNewsData }) => {
-  
-  const [offset, setOffset] = React.useState(12);
-  
+const Home = ({ articles, loading, maxLimit, offset, getNewsData }) => {
+    
   const handleNewsRequest = () => {
     getNewsData('', offset);
-    setOffset((prevState) => prevState + 12);
   };
 
   const classes = useStyles();
@@ -162,6 +159,7 @@ const mapStateToProps = (state) => ({
   articles: state.newsData.articles,
   loading: state.newsData.loading,
   maxLimit: state.newsData.maxLimit,
+  offset: state.newsData.offset,
 });
 
 export default connect(mapStateToProps, { getNewsData })(Home);

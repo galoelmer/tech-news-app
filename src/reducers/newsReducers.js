@@ -13,7 +13,7 @@ const initialState = {
   offset: 0,
 };
 
-export default function (state = initialState, action) {
+export default function newsReducer(state = initialState, action) {
   switch (action.type) {
     case SET_NEWS_DATA:
       return {

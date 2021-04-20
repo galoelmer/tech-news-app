@@ -5,6 +5,7 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light-border.css";
 import "tippy.js/animations/scale-extreme.css";
+import logo from "../images/logo.png";
 
 /* Redux */
 import { connect } from "react-redux";
@@ -14,7 +15,6 @@ import { logoutUser, updateUsername } from "../actions/userActions";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import IconButton from "@material-ui/core/IconButton";
@@ -40,13 +40,6 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     color: "#ae4e59",
   },
-  title: {
-    // flexGrow: 1,
-    "& a": {
-      textDecoration: "none",
-      color: "#fff",
-    },
-  },
   toolbar: {
     display: "flex",
     justifyContent: "space-between",
@@ -71,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
     justifyContent: "flex-start",
   },
-  navLinks: props => ({
+  navLinks: (props) => ({
     [theme.breakpoints.down("xs")]: {
       display: "none",
     },
@@ -115,9 +108,9 @@ const Navbar = ({
     <div id="back-to-top-anchor" className={classes.root}>
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
-          <Typography variant="h6" className={classes.title}>
-            <Link to="/">Tech News</Link>
-          </Typography>
+          <Link to="/">
+            <img src={logo} width="170" alt="tech news logo" />
+          </Link>
           {authenticated ? (
             <div className={classes.navLinks}>
               <Button

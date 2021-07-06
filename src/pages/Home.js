@@ -17,6 +17,9 @@ import Zoom from '@material-ui/core/Zoom';
 import { connect } from 'react-redux';
 import { getNewsData } from '../actions/newsActions';
 
+/* Components */
+import Footer from '../components/Footer';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: 20,
@@ -140,6 +143,7 @@ const Home = ({ articles, loading, maxLimit, offset, getNewsData }) => {
         )}
         {!articles.length && !loading && <NoNews />}
       </Grid>
+      <Footer />
       <ScrollTop>
         <Fab
           style={{

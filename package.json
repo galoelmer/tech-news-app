@@ -31,7 +31,7 @@
   "scripts": {
     "postinstall": "netlify-lambda install",
     "dev": "cross-env REACT_APP_ENV=local-development npm start",
-    "start": "react-scripts start",
+    "start": "cross-env REACT_APP_ENV=local-development react-scripts start",
     "build": "rimraf build && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

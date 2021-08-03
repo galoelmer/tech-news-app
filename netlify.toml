@@ -10,3 +10,6 @@
 
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
+
+[dev]
+  command = "npm run dev"

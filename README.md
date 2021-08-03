@@ -23,7 +23,7 @@ npm install
 ## Usage
 
 ```sh
-npm run dev
+npm start
 ```
 
 ## Built With

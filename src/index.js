@@ -6,8 +6,12 @@ import App from './App';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { makeServer } from './server';
 
-if (process.env.REACT_APP_ENV === 'local-development') {
-  makeServer({ environment: 'development' });
+if (
+  process.env.NODE_ENV === "development" &&
+  process.env.REACT_APP_NETLIFY_SERVER !== "netlify-server" &&
+  process.env.REACT_APP_ENV === "local-development"
+) {
+  makeServer({ environment: "development" });
 }
 
 const theme = createMuiTheme({

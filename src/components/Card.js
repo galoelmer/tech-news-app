@@ -53,9 +53,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1em',
     width: theme.spacing(7),
     height: theme.spacing(7),
-    border: '1px solid #ccc',
-    textAlign: 'center',
-    wordBreak: 'break-all',
+    border: "1px solid #e9e9e9",
+    textAlign: "center",
   }),
   description: {
     overflow: 'hidden',

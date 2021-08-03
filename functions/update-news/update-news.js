@@ -14,21 +14,20 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 const { REACT_APP_NEWS_API_KEY: API_KEY } = process.env;
-const URL = `http://newsapi.org/v2/top-headlines?country=us&category=technology&apiKey=${API_KEY}`;
+const URL = `https://newsapi.org/v2/top-headlines?sources=ars-technica,engadget,hacker-news,recode,techcrunch,techradar,the-next-web,the-verge,wired&apiKey=${API_KEY}`;
 
 // Add source logo url to articles
 const addLogoUrl = (sourceId) => {
   const sourceIds = [
+    'hacker-news',
+    'recode',
     'engadget',
     'techcrunch',
     'techradar',
     'the-next-web',
     'the-verge',
     'wired',
-    'google-news',
-    '9to5Mac',
     'ars-technica',
-    'polygon',
   ];
   return sourceId && sourceIds.includes(sourceId)
     ? `https://firebasestorage.googleapis.com/v0/b/${process.env.REACT_APP_FIREBASE_PROJECT_ID}.appspot.com/o/logos%2F${sourceId}.png?alt=media`
@@ -70,6 +69,7 @@ function checkCredentials(basicAuth) {
 }
 
 exports.handler = async function (event) {
+  const { authorization } = event.headers
   if (event.httpMethod !== 'GET')
     return {
       statusCode: 400,
@@ -77,7 +77,7 @@ exports.handler = async function (event) {
     };
 
   // Request authorization decoding credentials
-  const authHeader = event.headers.authorization.split(' ')[1];
+  const authHeader = authorization ? authorization.split(' ')[1] : 'username:password'
   const authenticated = checkCredentials(authHeader);
   if (!authenticated)
     return {

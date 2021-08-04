@@ -106,7 +106,7 @@ const Login = ({ loginUser }) => {
           Login
         </Typography>
         <Formik
-          initialValues={{ email: '', password: '' }}
+          initialValues={{ email: "", password: "" }}
           validationSchema={LoginSchema}
           onSubmit={(values, { setSubmitting, setFieldError }) => {
             loginUser(values, history, setFieldError, setSubmitting);
@@ -137,11 +137,11 @@ const Login = ({ loginUser }) => {
                 fullWidth
                 name="password"
                 label="Password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 id="password"
                 autoComplete="current-password"
                 onChange={handleChange}
-                onKeyDown={(e) => e.key === ' ' && e.preventDefault()}
+                onKeyDown={(e) => e.key === " " && e.preventDefault()}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -153,8 +153,8 @@ const Login = ({ loginUser }) => {
                         style={{
                           color:
                             errors.password && touched.password
-                              ? '#f77066'
-                              : '',
+                              ? "#f77066"
+                              : "",
                         }}
                       >
                         {showPassword ? (
@@ -194,11 +194,11 @@ const Login = ({ loginUser }) => {
                 TODO:
                     - Add 'Forgot password' functionality
              */}
-                {/* <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid> */}
+                <Grid item xs>
+                  <Link variant="body2" component={MuiLink} to="/forgot-password">
+                    Forgot password?
+                  </Link>
+                </Grid>
                 <Grid item>
                   <Link variant="body2" component={MuiLink} to="/signup">
                     {"Don't have an account? Sign Up"}

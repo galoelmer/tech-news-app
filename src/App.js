@@ -21,6 +21,7 @@ import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Favorites from './pages/Favorites';
+import ResetPassword from './pages/ResetPassword';
 
 /* Decode authentication Token
 -------------------------------------------------- */
@@ -63,6 +64,9 @@ function App() {
             <PrivateRoute exact path="/login">
               <Login />
             </PrivateRoute>
+            <Route path="/forgot-password">
+              <ResetPassword />
+            </Route>
             <Route path="*">
               <Redirect to="/" />
             </Route>

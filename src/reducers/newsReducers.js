@@ -3,8 +3,10 @@ import {
   MARK_FAVORITE_NEWS,
   UNMARK_FAVORITE_NEWS,
   UNMARK_SINGLE_FAVORITE_NEWS,
+  INCREASE_NEWS_DATA_OFFSET,
+  CHECK_ALL_FAVORITE_NEWS,
   LOADING_DATA,
-} from '../types';
+} from "../types";
 
 const initialState = {
   articles: [],
@@ -21,8 +23,16 @@ export default function newsReducer(state = initialState, action) {
         articles: [...state.articles, ...action.payload.data],
         loading: false,
         maxLimit: action.payload.maxLimit,
+      };
+
+    case INCREASE_NEWS_DATA_OFFSET:
+      return {
+        ...state,
         offset: state.offset + 12,
       };
+
+    case CHECK_ALL_FAVORITE_NEWS:
+      return Object.assign({}, state, { articles: markAllFavoritesNews(action.payload, state.articles) });
 
     case MARK_FAVORITE_NEWS:
       return Object.assign({}, state, {
@@ -32,7 +42,7 @@ export default function newsReducer(state = initialState, action) {
     case UNMARK_FAVORITE_NEWS:
       return Object.assign({}, state, {
         articles: state.articles.map((article) => {
-          if (!article.hasOwnProperty('favorite')) return article;
+          if (!article.hasOwnProperty("favorite")) return article;
           delete article.favorite;
           return article;
         }),
@@ -57,10 +67,22 @@ export default function newsReducer(state = initialState, action) {
   }
 }
 
+// Check single article to user favorite News
 const markFavoriteNews = (id, articles) => {
   return articles.map((article) => {
     if (article.id !== id) return article;
     article.favorite = true;
     return article;
+  });
+};
+
+// Check all articles for favorites
+const markAllFavoritesNews = (userFavorites, currentNews) => {
+  const favoritesId = userFavorites.map((item) => item.articleId);
+  return currentNews.map((item) => {
+    if (favoritesId.includes(item.id)) {
+      item.favorite = true;
+    } 
+    return item;
   });
 };

@@ -7,8 +7,9 @@ import {
   REMOVE_FROM_FAVORITES,
   UPDATE_USERNAME,
   LOADING_USER_DATA,
+  CHECK_ALL_FAVORITE_NEWS,
 } from "../types";
-import { getNewsData } from "./newsActions";
+
 import axios from "axios";
 
 /* Set firebase token to HTTP Authorization header and store it in localStorage api  */
@@ -55,12 +56,12 @@ export const loginUser =
   };
 
 /* Get user data action */
-export const getUserData = (history, setSubmitting) => (dispatch) => {
+export const getUserData = (history, setSubmitting) => (dispatch, getState) => {
   axios
     .get("/api/get-user-data")
     .then((res) => {
       dispatch({ type: SET_USER, payload: res.data });
-      dispatch(getNewsData(res.data.userId));
+      dispatch({ type: CHECK_ALL_FAVORITE_NEWS, payload: res.data.favorites });
       if (history || setSubmitting) {
         setSubmitting(false);
         history.push("/");
@@ -121,9 +122,9 @@ export const resetUserPassword = (
           setErrors(key, value);
         }
       } else {
-        setErrors("general", err.response.data.message)
+        setErrors("general", err.response.data.message);
       }
-      
+
       setSubmitting(false);
     });
 };

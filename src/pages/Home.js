@@ -1,24 +1,24 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import AnnouncementIcon from '@material-ui/icons/Announcement';
-import Grid from '@material-ui/core/Grid';
-import Card from '../components/Card';
-import Button from '@material-ui/core/Button';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import Fab from '@material-ui/core/Fab';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import Zoom from '@material-ui/core/Zoom';
+import React from "react";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
+import AnnouncementIcon from "@material-ui/icons/Announcement";
+import Grid from "@material-ui/core/Grid";
+import Card from "../components/Card";
+import Button from "@material-ui/core/Button";
+import useScrollTrigger from "@material-ui/core/useScrollTrigger";
+import Fab from "@material-ui/core/Fab";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import Zoom from "@material-ui/core/Zoom";
 
 /* Redux */
-import { connect } from 'react-redux';
-import { getNewsData } from '../actions/newsActions';
+import { connect } from "react-redux";
+import { getNewsData } from "../actions/newsActions";
 
 /* Components */
-import Footer from '../components/Footer';
+import Footer from "../components/Footer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,10 +29,10 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 0,
-    paddingTop: '56.25%',
+    paddingTop: "56.25%",
   },
   scrollTop: {
-    position: 'fixed',
+    position: "fixed",
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
@@ -44,9 +44,9 @@ const NoNews = () => (
       <AnnouncementIcon
         style={{
           fontSize: 70,
-          display: 'block',
-          margin: '0 auto',
-          color: '#00bfff',
+          display: "block",
+          margin: "0 auto",
+          color: "#00bfff",
         }}
       />
       <Typography component="h2" variant="h3" align="center" color="primary">
@@ -70,11 +70,11 @@ const ScrollTop = (props) => {
 
   const handleClick = (event) => {
     const anchor = (event.target.ownerDocument || document).querySelector(
-      '#back-to-top-anchor'
+      "#back-to-top-anchor"
     );
 
     if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      anchor.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
 
@@ -96,44 +96,53 @@ ScrollTop.propTypes = {
   window: PropTypes.func,
 };
 
-const Home = ({ articles, loading, maxLimit, offset, getNewsData }) => {
-    
+const Home = ({
+  articles,
+  loading,
+  maxLimit,
+  incrementOffset,
+  getNewsData,
+}) => {
+
   const handleNewsRequest = () => {
-    getNewsData('', offset);
+    incrementOffset();
+    getNewsData();
   };
 
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        {(loading ? [...articles, ...Array.from(new Array(12))] : articles).map((item, index) => {
-          return (
-            <Grid key={index} item xs={12} sm={6} md={4} lg={3} xl={2}>
-              {item ? (
-                <Card
-                  id={item.id}
-                  title={item.title}
-                  description={item.description}
-                  newsUrl={item.url}
-                  imageUrl={item.urlToImage}
-                  datePublished={item.publishedAt}
-                  sourceName={item.sourceName}
-                  imageSource={item.imageSource}
-                  markFavorite={item.favorite}
-                />
-              ) : (
-                <Card />
-              )}
-            </Grid>
-          );
-        })}
+        {(loading ? [...articles, ...Array.from(new Array(12))] : articles).map(
+          (item, index) => {
+            return (
+              <Grid key={index} item xs={12} sm={6} md={4} lg={3} xl={2}>
+                {item ? (
+                  <Card
+                    id={item.id}
+                    title={item.title}
+                    description={item.description}
+                    newsUrl={item.url}
+                    imageUrl={item.urlToImage}
+                    datePublished={item.publishedAt}
+                    sourceName={item.sourceName}
+                    imageSource={item.imageSource}
+                    markFavorite={item.favorite}
+                  />
+                ) : (
+                  <Card />
+                )}
+              </Grid>
+            );
+          }
+        )}
         {!!articles.length && !loading && (
           <Button
             variant="contained"
             color="primary"
             onClick={handleNewsRequest}
             style={{
-              margin: '10px auto',
+              margin: "10px auto",
             }}
             id="load-more-button"
             disabled={maxLimit}
@@ -147,7 +156,7 @@ const Home = ({ articles, loading, maxLimit, offset, getNewsData }) => {
       <ScrollTop>
         <Fab
           style={{
-            background: '#f48fb1',
+            background: "#f48fb1",
           }}
           size="small"
           aria-label="scroll back to top"
@@ -163,7 +172,13 @@ const mapStateToProps = (state) => ({
   articles: state.newsData.articles,
   loading: state.newsData.loading,
   maxLimit: state.newsData.maxLimit,
-  offset: state.newsData.offset,
 });
 
-export default connect(mapStateToProps, { getNewsData })(Home);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    incrementOffset: () => dispatch({ type: "INCREASE_NEWS_DATA_OFFSET" }),
+    getNewsData: () => dispatch(getNewsData()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

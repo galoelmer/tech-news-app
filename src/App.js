@@ -32,19 +32,19 @@ const token = localStorage.FBIdToken;
     - Verify this is a valid firebase token
 */
 
+
+store.dispatch(getNewsData());
+
 if (token) {
   const decodedToken = jwtDecode(token);
   if (decodedToken.exp * 1000 < Date.now()) {
     store.dispatch(logoutUser());
-    store.dispatch(getNewsData());
   } else {
     store.dispatch({ type: SET_AUTHENTICATED });
     axios.defaults.headers.common['Authorization'] = token;
     store.dispatch(getUserData());
   }
-} else {
-  store.dispatch(getNewsData());
-}
+} 
 /* End of Decode authentication Token
 -------------------------------------------------- */
 

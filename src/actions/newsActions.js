@@ -1,32 +1,38 @@
-import { SET_NEWS_DATA, MARK_FAVORITE_NEWS, LOADING_DATA } from '../types';
-import axios from 'axios';
+import {
+  SET_NEWS_DATA,
+  MARK_FAVORITE_NEWS,
+  LOADING_DATA,
+  CHECK_ALL_FAVORITE_NEWS,
+} from "../types";
+import axios from "axios";
 
 /* Get News data */
-export const getNewsData = (userId, offset) => (dispatch, getState) => {
+export const getNewsData = () => (dispatch, getState) => {
+  const offset = getState().newsData.offset;
   dispatch({
     type: LOADING_DATA,
   });
 
   axios
-    .get('/api/get-news-data', {
+    .get("/api/get-news-data", {
       params: {
         offset,
       },
     })
     .then((res) => {
-      const data = userId
-        ? markFavorites(getState().user.favorites, [
-            ...getState().newsData.articles,
-            ...res.data.data,
-          ])
-        : res.data.data;
       dispatch({
         type: SET_NEWS_DATA,
         payload: {
-          data,
+          data: res.data.data,
           maxLimit: res.data.maxLimit,
         },
       });
+      if (getState().user.id) {
+        dispatch({
+          type: CHECK_ALL_FAVORITE_NEWS,
+          payload: getState().user.favorites,
+        });
+      }
     })
     .catch((err) => {
       dispatch({ type: SET_NEWS_DATA, payload: { data: [], maxLimit: true } });
@@ -37,15 +43,4 @@ export const getNewsData = (userId, offset) => (dispatch, getState) => {
 /* Mark Favorites News */
 export const markFavoriteNews = (id) => (dispatch) => {
   dispatch({ type: MARK_FAVORITE_NEWS, payload: id });
-};
-
-// Check if user added article to favorites
-const markFavorites = (userFavorites, currentNews) => {
-  const favoritesId = userFavorites.map((item) => item.articleId);
-  return currentNews.map((item) => {
-    if (favoritesId.includes(item.id)) {
-      item.favorite = true;
-    }
-    return item;
-  });
 };

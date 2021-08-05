@@ -190,10 +190,6 @@ const Login = ({ loginUser }) => {
                 )}
               </div>
               <Grid container justify="center">
-                {/**
-                TODO:
-                    - Add 'Forgot password' functionality
-             */}
                 <Grid item xs>
                   <Link variant="body2" component={MuiLink} to="/forgot-password">
                     Forgot password?

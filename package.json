@@ -17,6 +17,7 @@
     "formik": "^2.2.0",
     "jwt-decode": "^3.0.0",
     "netlify-lambda": "^2.0.1",
+    "query-string": "^7.0.1",
     "randomcolor": "^0.6.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

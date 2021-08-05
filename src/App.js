@@ -21,7 +21,8 @@ import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Favorites from './pages/Favorites';
-import ResetPassword from './pages/ResetPassword';
+import RequestResetPassword from './pages/RequestResetPassword';
+import UpdateUserPassword from './pages/UpdateUserPassword';
 
 /* Decode authentication Token
 -------------------------------------------------- */
@@ -65,7 +66,10 @@ function App() {
               <Login />
             </PrivateRoute>
             <Route path="/forgot-password">
-              <ResetPassword />
+              <RequestResetPassword />
+            </Route>
+            <Route path="/reset-password">
+              <UpdateUserPassword />
             </Route>
             <Route path="*">
               <Redirect to="/" />

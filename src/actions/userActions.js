@@ -99,8 +99,8 @@ export const addToUserFavorites = (news) => (dispatch) => {
 
 /* Remove favorite news from user favorite list */
 export const removeFromFavorites = (id) => (dispatch) => {
-  dispatch({ type: REMOVE_FROM_FAVORITES, payload: id });
   dispatch({ type: UNMARK_SINGLE_FAVORITE_NEWS, payload: id });
+  dispatch({ type: REMOVE_FROM_FAVORITES, payload: id });
 };
 
 /* Reset User password */

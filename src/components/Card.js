@@ -1,64 +1,64 @@
-import React, { useState, useEffect } from 'react';
-import { formatDistanceStrict } from 'date-fns';
-import { useHistory } from 'react-router-dom';
-import randomColor from 'randomcolor';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
+import React, { useState, useEffect } from "react";
+import { formatDistanceStrict } from "date-fns";
+import { useHistory } from "react-router-dom";
+import randomColor from "randomcolor";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 
 /* Redux */
-import { connect } from 'react-redux';
-import { markFavoriteNews } from '../actions/newsActions';
+import { connect } from "react-redux";
+import { markFavoriteNews } from "../actions/newsActions";
 import {
   addToUserFavorites,
   removeFromFavorites,
-} from '../actions/userActions';
+} from "../actions/userActions";
 
 /* Material UI components */
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ShareLinks from './ShareLinks';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ShareLinks from "./ShareLinks";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
     maxWidth: 400,
     maxHeight: 500,
     minHeight: 500,
-    margin: '0 auto',
-    [theme.breakpoints.down('xs')]: {
-      minWidth: 320
-    }
+    margin: "0 auto",
+    [theme.breakpoints.down("xs")]: {
+      minWidth: 320,
+    },
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: "56.25%", // 16:9
   },
   avatar: () => ({
-    backgroundColor: randomColor({ luminosity: 'dark', hue: 'random' }),
-    fontSize: '1em',
+    backgroundColor: randomColor({ luminosity: "dark", hue: "random" }),
+    fontSize: "1em",
     width: theme.spacing(7),
     height: theme.spacing(7),
     border: "1px solid #e9e9e9",
     textAlign: "center",
   }),
   description: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 }));
 
@@ -84,10 +84,7 @@ const NewsCard = ({
   const [loadingImage, setLoadingImage] = useState(true);
   const history = useHistory();
   const [loadingFavoriteButton, setLoadingFavoriteButton] = useState(false);
-  /**
-      TODO:
-      - Re-work on how to handle favorites news
-  */
+
   useEffect(() => {
     setIsFavorite(!!markFavorite);
   }, [markFavorite]);
@@ -105,51 +102,54 @@ const NewsCard = ({
     fetchImage(imageUrl);
   }, [imageUrl]);
 
-  // Handle click to add/remove from favorite button
-  const handleFavorite = () => {
-    if (!authenticated) {
-      history.push('/login');
-    } else {
-      const article = {
-        articleId: id,
-        title,
-        description,
-        url: newsUrl,
-        urlToImage: imageUrl,
-        imageSource,
-        sourceName,
-        publishedAt: datePublished,
-      };
+  // Handle add/remove favorite-user-articles @ Home-page
+  const handleToggleAddRemoveFavorites = () => {
+    const article = { // create article object
+      articleId: id,
+      title,
+      description,
+      url: newsUrl,
+      urlToImage: imageUrl,
+      imageSource,
+      sourceName,
+      publishedAt: datePublished,
+    };
 
-      setLoadingFavoriteButton(true);
-      
-      if (isFavorite || markFavorite === 'remove-icon') {
-        removeFromFavorites(id);
-      } else {
-        addToUserFavorites(article);
-        markFavoriteNews(id);
-      }
+    const data = { // create object-data to be sent to server
+      articleId: id,
+      userId,
+      ...(!isFavorite && { article }),
+    };
 
-      const data = {
-        articleId: id,
-        userId,
-        ...(!isFavorite && { article }),
-      };
+    const requestType = isFavorite
+      ? "remove-from-favorites"
+      : "add-to-favorites";
 
-      const requestType = isFavorite
-        ? 'remove-from-favorites'
-        : 'add-to-favorites';
+    setLoadingFavoriteButton(true); // disable favorite-button to prevent multiple clicks crash
+    addToUserFavorites(article); // add favorite to local state
+    markFavoriteNews(id);
 
-      fetch(`/.netlify/functions/${requestType}`, {
-        method: 'POST',
-        body: JSON.stringify(data),
+    fetch(`/.netlify/functions/${requestType}`, { // add favorite to remove server
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        setLoadingFavoriteButton(false);
       })
-        .then(() => {
-          setLoadingFavoriteButton(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleFavorite = () => {
+    if (!authenticated) { // User can't store articles without been logging in
+      history.push("/login");
+    } else {
+      if (isFavorite || markFavorite === "remove-icon") {
+        removeFromFavorites(id); // Remove favorite-article @ favorite-page-view
+      } else {
+        handleToggleAddRemoveFavorites();
+      }
     }
     setIsFavorite((prevState) => !prevState);
   };
@@ -158,7 +158,7 @@ const NewsCard = ({
     <Card className={classes.root} data-article-id={id}>
       <Link
         underline="none"
-        href={newsUrl || '#'}
+        href={newsUrl || "#"}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -209,7 +209,7 @@ const NewsCard = ({
             <CardMedia
               className={classes.media}
               image={currentImage}
-              title={title || ''}
+              title={title || ""}
             />
           ) : (
             <Skeleton
@@ -226,8 +226,8 @@ const NewsCard = ({
                 component="p"
                 className={classes.description}
               >
-                {(description && description.slice(0, 170)) + '...' ||
-                  'No description available'}
+                {(description && description.slice(0, 170)) + "..." ||
+                  "No description available"}
               </Typography>
             ) : (
               <React.Fragment>
@@ -248,11 +248,11 @@ const NewsCard = ({
       <CardActions disableSpacing>
         <Tippy
           content={
-            markFavorite === 'remove-icon'
-              ? 'Remove'
+            markFavorite === "remove-icon"
+              ? "Remove"
               : isFavorite
-              ? 'Remove from Favorites'
-              : 'Add to Favorites'
+              ? "Remove from Favorites"
+              : "Add to Favorites"
           }
         >
           <IconButton
@@ -260,7 +260,7 @@ const NewsCard = ({
             onClick={handleFavorite}
             disabled={loadingFavoriteButton}
           >
-            {markFavorite === 'remove-icon' ? (
+            {markFavorite === "remove-icon" ? (
               <DeleteIcon htmlColor="#ed6999" />
             ) : isFavorite ? (
               <FavoriteIcon />

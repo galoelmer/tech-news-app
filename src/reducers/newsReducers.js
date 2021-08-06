@@ -39,7 +39,7 @@ export default function newsReducer(state = initialState, action) {
         articles: markFavoriteNews(action.payload, state.articles),
       });
 
-    case UNMARK_FAVORITE_NEWS:
+    case UNMARK_FAVORITE_NEWS: // uncheck all favorite articles after user logout
       return Object.assign({}, state, {
         articles: state.articles.map((article) => {
           if (!article.hasOwnProperty("favorite")) return article;

@@ -65,10 +65,10 @@ function App() {
             <PrivateRoute exact path="/login">
               <Login />
             </PrivateRoute>
-            <Route path="/forgot-password">
+            <Route exact path="/forgot-password">
               <RequestResetPassword />
             </Route>
-            <Route path="/reset-password">
+            <Route exact path="/reset-password">
               <UpdateUserPassword />
             </Route>
             <Route path="*">

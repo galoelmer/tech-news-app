@@ -102,9 +102,24 @@ const NewsCard = ({
     fetchImage(imageUrl);
   }, [imageUrl]);
 
+  // Handle add/remove favorite-user-article from server
+  const addRemoveFavoriteRequest = (requestType, data) => {
+    fetch(`/.netlify/functions/${requestType}`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        markFavorite !== "remove-icon" && setLoadingFavoriteButton(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   // Handle add/remove favorite-user-articles @ Home-page
   const handleToggleAddRemoveFavorites = () => {
-    const article = { // create article object
+    const article = {
+      // create article object
       articleId: id,
       title,
       description,
@@ -115,7 +130,8 @@ const NewsCard = ({
       publishedAt: datePublished,
     };
 
-    const data = { // create object-data to be sent to server
+    const data = {
+      // create object-data to be sent to server
       articleId: id,
       userId,
       ...(!isFavorite && { article }),
@@ -128,26 +144,22 @@ const NewsCard = ({
     setLoadingFavoriteButton(true); // disable favorite-button to prevent multiple clicks crash
     addToUserFavorites(article); // add favorite to local state
     markFavoriteNews(id);
-
-    fetch(`/.netlify/functions/${requestType}`, { // add favorite to remove server
-      method: "POST",
-      body: JSON.stringify(data),
-    })
-      .then(() => {
-        setLoadingFavoriteButton(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    addRemoveFavoriteRequest(requestType, data);
   };
 
   const handleFavorite = () => {
-    if (!authenticated) { // User can't store articles without been logging in
+    if (!authenticated) {
+      // User can't store articles without been logging in
       history.push("/login");
     } else {
       if (isFavorite || markFavorite === "remove-icon") {
-        removeFromFavorites(id); // Remove favorite-article @ favorite-page-view
+        removeFromFavorites(id);
+        addRemoveFavoriteRequest("remove-from-favorites", {
+          articleId: id,
+          userId,
+        });
       } else {
+        // Remove favorite-article @ favorite-page-view
         handleToggleAddRemoveFavorites();
       }
     }

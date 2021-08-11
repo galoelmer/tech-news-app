@@ -33,8 +33,6 @@ const token = localStorage.FBIdToken;
 */
 
 
-store.dispatch(getNewsData());
-
 if (token) {
   const decodedToken = jwtDecode(token);
   if (decodedToken.exp * 1000 < Date.now()) {
@@ -49,6 +47,9 @@ if (token) {
 -------------------------------------------------- */
 
 function App() {
+   React.useEffect(() => {
+     store.dispatch(getNewsData());
+   }, []);
   return (
     <React.Fragment>
       <Provider store={store}>

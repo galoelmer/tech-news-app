@@ -1,41 +1,43 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { Formik, Form } from 'formik';
-import * as yup from 'yup';
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Formik, Form } from "formik";
+import * as yup from "yup";
+import queryString from "query-string";
 
 /* Redux */
-import { connect } from 'react-redux';
-import { loginUser } from '../actions/userActions';
+import { connect } from "react-redux";
+import { loginUser } from "../actions/userActions";
 
 /* Material UI components */
-import { Link as MuiLink } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import { Link as MuiLink } from "react-router-dom";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import Alert from "@material-ui/lab/Alert";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+      {"Copyright © "}
       {/* <Link color="inherit" href="https://material-ui.com/">
         Your Website
       </Link>{' '} */}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -43,43 +45,46 @@ function Copyright() {
 let LoginSchema = yup.object().shape({
   email: yup
     .string()
-    .email('This field must be a valid email')
-    .required('This field is required.'),
-  password: yup.string().required('This field is required.'),
+    .email("This field must be a valid email")
+    .required("This field is required."),
+  password: yup.string().required("This field is required."),
 });
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
   formHelperText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
   },
   buttonWrapper: {
     margin: theme.spacing(1),
-    position: 'relative',
+    position: "relative",
   },
   buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     marginTop: -12,
     marginLeft: -12,
+  },
+  alert: {
+    marginBottom: theme.spacing(3),
   },
 }));
 
@@ -87,6 +92,11 @@ const Login = ({ loginUser }) => {
   const classes = useStyles();
   const history = useHistory();
   const [showPassword, setShowPassword] = useState(false);
+
+  const isPasswordUpdated = React.useMemo(
+    () => queryString.parse(history.location.search).resetPassword,
+    [history.location.search]
+  );
 
   const handleClickShowPassword = () => {
     setShowPassword((prevState) => !prevState);
@@ -99,6 +109,11 @@ const Login = ({ loginUser }) => {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
+        {isPasswordUpdated === "true" && (
+          <Alert className={classes.alert} variant="filled" severity="success">
+            "Password Successfully Updated"
+          </Alert>
+        )}
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -189,9 +204,13 @@ const Login = ({ loginUser }) => {
                   />
                 )}
               </div>
-              <Grid container justify="center">
+              <Grid container justifyContent="center">
                 <Grid item xs>
-                  <Link variant="body2" component={MuiLink} to="/forgot-password">
+                  <Link
+                    variant="body2"
+                    component={MuiLink}
+                    to="/forgot-password"
+                  >
                     Forgot password?
                   </Link>
                 </Grid>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 import { useLocation } from "react-router";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
@@ -92,7 +93,9 @@ const UpdateUserPassword = () => {
   const [isActionCodeValid, setIsActionCodeValid] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const queries = queryString.parse(useLocation().search);
+  const { search } = useLocation();
+
+  const queries = React.useMemo(() => queryString.parse(search), [search]);
 
   useEffect(() => {
     if (alert === "error") {
@@ -108,6 +111,16 @@ const UpdateUserPassword = () => {
   const handleClickShowPassword = () => {
     setShowPassword((prevState) => !prevState);
   };
+
+  if (alert === "success")
+    return (
+      <Redirect
+        to={{
+          pathname: "/login",
+          search: "?resetPassword=true",
+        }}
+      />
+    );
 
   return (
     <Container component="main" maxWidth="xs">

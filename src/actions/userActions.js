@@ -143,12 +143,11 @@ export const updateUserPassword = (
     .post("/api/update-user-password", data)
     .then((res) => {
       if (res.statusText === "OK" && res.data === "success") {
-        setSubmitting(false);
         setAlert("success");
-        setError("");
+      } else {
+        setIsActionCodeValid(res.data === "success" ? false : true);
+        setLoading(false);
       }
-      setIsActionCodeValid(res.data === "success" ? false : true);
-      setLoading(false);
     })
     .catch((err) => {
       setError(err.response.data);

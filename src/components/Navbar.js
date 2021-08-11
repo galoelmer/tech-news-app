@@ -14,23 +14,23 @@ import { logoutUser, updateUsername } from "../actions/userActions";
 /* Material UI Components */
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import CollectionsBookmarkIcon from "@material-ui/icons/CollectionsBookmark";
+import Divider from "@material-ui/core/Divider";
+import Drawer from "@material-ui/core/Drawer";
+import EditNameForm from "./EditNameForm";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import IconButton from "@material-ui/core/IconButton";
-import Box from "@material-ui/core/Box";
-import EditNameForm from "./EditNameForm";
-import MenuIcon from "@material-ui/icons/Menu";
-import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import Divider from "@material-ui/core/Divider";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ListItemText from "@material-ui/core/ListItemText";
 import LockIcon from "@material-ui/icons/Lock";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
-import CollectionsBookmarkIcon from "@material-ui/icons/CollectionsBookmark";
+import MenuIcon from "@material-ui/icons/Menu";
+import Toolbar from "@material-ui/core/Toolbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -41,9 +41,9 @@ npm start
 
 ## Author
 
-👤 **Elmer C. Galo**
+👤 **Noah Galo**
 
-* Github: [@galoelmer](https://github.com/galoelmer)
+* Github: [@galonoah](https://github.com/galonoah)
 
 ## 🤝 Contributing
 

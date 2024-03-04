@@ -31,11 +31,11 @@ export default function StickyFooter() {
           Created by{" "}
           <Link
             color="inherit"
-            href="https://galoelmer.github.io/"
+            href="https://egalo.dev/"
             target="_blank"
             rel="noreferrer noopener"
           >
-            <span>Elmer C. Galo</span>
+            <span>Noah Galo</span>
           </Link>
         </Typography>
       </footer>
